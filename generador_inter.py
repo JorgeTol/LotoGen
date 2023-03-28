@@ -10,7 +10,7 @@ fecha_fin = hoy.strftime("%Y%m%d")
 
 
 # Listado de juegos.
-# id : [Nombre sorteo, url json, cantidad de números de la combinación, rango de números que entran en juego]
+# id : [Nombre sorteo, url json, número de bolas, rango de números que entran en juego]
 list_lottery = {
     0: ["Salir", ""],
     1: ["Primitiva",
