@@ -10,24 +10,28 @@ fecha_fin = hoy.strftime("%Y%m%d")
 
 
 # Listado de juegos.
-# id : [Nombre sorteo, url json, número de bolas, rango de números que entran en juego]
+# id : [Nombre sorteo, url json, número de bolas, número bolas adicionales (reintegro, complementario, estrellas, etc) y rango de números que entran en juego]
 list_lottery = {
     0: ["Salir", ""],
     1: ["Primitiva",
         "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=" + fecha_inicio + "&fechaFinInclusiva=" + fecha_fin,
         6,
+        2,
         49],
     2: ["Bonoloto",
         "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=BONO&celebrados=true&fechaInicioInclusiva=" + fecha_inicio + "&fechaFinInclusiva=" + fecha_fin,
         6,
+        2,
         49],
     3: ["Euromillones",
         "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=" + fecha_inicio + "&fechaFinInclusiva=" + fecha_fin,
         5,
+        2,
         50],
     4: ["El Gordo de la Primitiva",
         "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=ELGR&celebrados=true&fechaInicioInclusiva=" + fecha_inicio + "&fechaFinInclusiva=" + fecha_fin,
         5,
+        1,
         54]
     }
 

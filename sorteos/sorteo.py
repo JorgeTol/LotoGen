@@ -1,94 +1,96 @@
 import urllib.request
 import json
 from datetime import datetime
+import numpy as np
 from prettytable import PrettyTable, DOUBLE_BORDER
 import locale
 
-locale.setlocale(locale.LC_ALL, 'es_ES.utf8')
+#locale.setlocale(locale.LC_ALL, 'es_ES.utf8')
 
 class Sorteo:
     def __init__(self, sorteo_elegido):
-        self.__fuente_datos_sorteo = sorteo_elegido[1]    # Url que contiene los datos a descargar
         self.__nombre_sorteo = sorteo_elegido[0]    # Nombre del sorteo.
-        self.__numero_bolas = sorteo_elegido[3]    # Número de bolas que entran en juego en la combinación principal.  
+        self.__cantidad_bolas_combinacion = sorteo_elegido[2]    # Cantidad de números que componen la combinación.
+        self.__cantidad_numeros_adicionales = sorteo_elegido[3]    # Cantidad de números que componen los números adicionales, complementario y reintegro, estrellas, etc..
+        self.__numero_bolas = sorteo_elegido[4]    # Número de bolas que entran en juego en la combinación principal.  
         
         # Almacenar todos los datos en json
-        with  urllib.request.urlopen(self.__fuente_datos_sorteo) as f:
+        with  urllib.request.urlopen(sorteo_elegido[1]) as f:
             lectura_datos = f.read().decode('utf-8')
             self.__tabla_json = json.loads(lectura_datos)
         
         self.__fecha_sorteo = []
-        self.__combinaciones = []    # Números de la combinación principal
-        self.__num_adicionales = []   # Complementarios, reintegros, estrellas. 
-        self.__numeros_bajos_altos = []
-        self.__pares_impares = []        
-        
+        self.__combinaciones = []
+        self.__joker = []
+        self.__numeros_adicionales = []
         # Extraer los datos para rellenar los atributos
         for datos_sorteo in self.__tabla_json:
             fecha = datetime.fromisoformat(datos_sorteo["fecha_sorteo"])
             fecha_formateada = f"{fecha.strftime('%A ').title():<10}" + fecha.strftime("%d/%m/%Y") # Lunes[margen]01/12/2000
+            
+            # Crear un array con la combinacion principal
+            if  self.__nombre_sorteo == "Euromillones":
+                split = " - "
+            elif self.__nombre_sorteo in ["Primitiva", "Bonoloto", "El Gordo de la Primitiva"]:
+                split = " "
+            combinacion = datos_sorteo["combinacion"].rsplit(split, maxsplit=sorteo_elegido[3]) 
+            combinacion_prin = np.array([int(x) for x in combinacion[0].rsplit(" - ")]) 
+            if self.__nombre_sorteo == "Primitiva":
+                    self.__joker.append(datos_sorteo["joker"]["combinacion"])
+            
+            # Crear array con los números adicionales.            
+            num_adicionales = ""
+            for i in range(1,self.__cantidad_numeros_adicionales + 1):
+                num_adicionales += combinacion[i] + " "
+            
             self.__fecha_sorteo.append(fecha_formateada)
-            if self.__nombre_sorteo in ["Primitiva", "Bonoloto"]:                
-                combinacion_separada = datos_sorteo["combinacion"].rsplit(" ", maxsplit=2) # Pasar a un array [combinacion, complementario reintegro]
-                self.__combinaciones.append(combinacion_separada[0])
-                self.__num_adicionales.append(combinacion_separada[1] + ' ' + combinacion_separada[2])                
-            
-            if self.__nombre_sorteo == "El Gordo de la Primitiva":
-                combinacion_separada = datos_sorteo["combinacion"].rsplit(" ", maxsplit=1) # Pasar a un array [combinacion, complementario reintegro]
-                self.__combinaciones.append(combinacion_separada[0])
-                self.__num_adicionales.append(combinacion_separada[1] )
-            
-            if self.__nombre_sorteo == "Euromillones":
-                combinacion_separada = datos_sorteo["combinacion"].rsplit(" - ", maxsplit=2) # Pasar a un array [combinacion, estrellas]
-                self.__combinaciones.append(combinacion_separada[0]) 
-                self.__num_adicionales.append(combinacion_separada[1]  + ' - ' + combinacion_separada[2]) 
+            self.__combinaciones.append(combinacion_prin)
+            self.__numeros_adicionales.append(num_adicionales.strip())
+
+        self.__combinaciones = np.array(self.__combinaciones)
         
-        for combinacion in self.__combinaciones:
-            combinacion = combinacion.split(" - ")
-            numeros_bajos = len(list(filter(lambda x: int(x) < 26, combinacion)))
-            numeros_altos = len(combinacion) - numeros_bajos            
-            self.__numeros_bajos_altos.append(f"{numeros_bajos} / {numeros_altos}")
-            
-            pares = len(list(filter(lambda x: int(x) % 2 == 0, combinacion)))
-            impares = len(combinacion) - pares
-            self.__pares_impares.append(f"{pares} / {impares}")  
-              
     
     # Generar listado de los últimos sorteos. Columnas fecha, combinación, sorteo secundario (si lo hay) y perfil de la combinación
     # Return string
     def ultimas_combinaciones(self):        
         tabla = PrettyTable()
-        
-        tabla.add_column("Fecha sorteo", self.__fecha_sorteo)
-        tabla.add_column("Combinacion ganadora", self.__combinaciones)
         if self.__nombre_sorteo in ["Primitiva", "Bonoloto"]:
-            titulo_cabecera = "C y R"
+            titulo_cabecera = "Comp. y Reint."
         elif self.__nombre_sorteo == "El Gordo de la Primitiva":
             titulo_cabecera = "Nº clave"
         elif self.__nombre_sorteo == "Euromillones":
             titulo_cabecera = "Estrellas"
-        tabla.add_column(titulo_cabecera, self.__num_adicionales)
+        tabla.field_names = ["Fecha sorteo", "Combinacion", titulo_cabecera, "Bajos / Altos", "Pares / Impares"]
         
-        tabla.add_column("Bajos / Altos", self.__numeros_bajos_altos)
-        tabla.add_column("Pares / Impares", self.__pares_impares)
-        tabla.set_style(DOUBLE_BORDER)
+        for i in range(len(self.__combinaciones)):
+          tabla.add_row(
+              [self.__fecha_sorteo[i],
+              ' - '.join(map(lambda s :f"{str(s):>2s}", self.__combinaciones[i])),     # En la combinación se pasa el array a string y se formatéa y espacia cada digito
+               self.__numeros_adicionales[i],
+               str(len(self.__combinaciones[i][self.__combinaciones[i] < 26])) + " / " + str(len(self.__combinaciones[i][self.__combinaciones[i] > 25])),
+               str(len(self.__combinaciones[i][self.__combinaciones[i] % 2 == 0])) + " / " + str(len(self.__combinaciones[i][self.__combinaciones[i] % 2 !=0]))
+              ]
+            )
+        if self.__nombre_sorteo == "Primitiva":
+            tabla.add_column("Joker", self.__joker)
+        tabla.set_style(DOUBLE_BORDER)  
         print(tabla)
         print("Mostrando los últimos ", len(self.__combinaciones), " resultados")
-
+    
+    # Muestra el número de apariciones de una bola y los sorteos que lleva sin aparecer.
+    # Return string, tabla.
     def apariciones_ausencias(self, total_bolas, sorteos):
         tabla = PrettyTable()
         tabla.field_names = ["Bola", "Apariciones", "Sorteos ausente"]
         # Creamos el listado de todas las bolas
         n_bolas = [x for x in range(1, total_bolas + 1)] 
-        list_numeros_aparecidos = [int(x) for y in sorteos for x in y.split(" - ")] # Pasar de un array con combinaciones a un array con números.
-
+        
         for bola in n_bolas:
-            apariciones = list_numeros_aparecidos.count(bola)
+            apariciones = len(sorteos[sorteos == bola])
             # Calcular días sin aparecer
             sorteos_ausente = 0
-            for sorteo in sorteos:
-                combinacion = list(map(int,sorteo.split(" - "))) # Convertir los dígitos (string) a enteros
-                if bola not in combinacion:
+            for sorteo in  sorteos:
+                if bola not in sorteo:
                     sorteos_ausente += 1                               
                 else:
                     break
@@ -102,35 +104,28 @@ class Sorteo:
         # Descomentar y/o modificar las siguientes líneas para establecer un orden por columnas.
         # tabla_apariciones.sortby = "Bola"
         # tabla_apariciones.reversesort = True
-
+        tabla.set_style(DOUBLE_BORDER)
         print(tabla)
-    
-    
-    # Generar tablas con distintas estadísticas: 
-    # - Primera tabla: Apariciones por figuras (nº bajos y altos, pares e impares) 
-    # - Segunda tabla: Nº de apariciones por bola y días ausentes.
-    # - Tercera tabla (Euromillones): Igual que la segunda tabla pero para las estrellas.
-    # 
-    def estadisticas(self):
-        # ############
-        # Primera tabla: 
-        #     Número de veces que ha aparicido una figura (nºbajo/alto y par/impar)
-        # ############
+
+    # Muestra una tabla con las estadísticas por figuras, nº bajo / alto y par / impar
+    # Return string, tabla.
+    def figuras_combinaciones(self):
         bajo_alto = {}        
         par_impar = {}        
         
-        # Obtener la cantidad de números que tiene la combinación para obtener todas las posible figuras
-        longitud_combinacion = len(self.__combinaciones[1].split(" - "))
-        for num in range(longitud_combinacion + 1 ): 
-            figura_key = str(num) + " / " + str((longitud_combinacion) - num)
+        # Crear las posibles figuras dependiendo del número de bolas de la combinación
+        for num in range(self.__cantidad_bolas_combinacion + 1 ): 
+            figura_key = str(num) + " / " + str((self.__cantidad_bolas_combinacion) - num)
             bajo_alto[figura_key] = 0
             par_impar[figura_key] = 0  
         
-        for figura in self.__numeros_bajos_altos:            
-            bajo_alto[figura] += 1
-        
-        for figura in self.__pares_impares:
-            par_impar[figura] += 1       
+        # Conteo de figuras.
+        for sorteo in self.__combinaciones:
+            figura_bajo_alto = str(len(sorteo[sorteo < 26])) + " / " + str(len(sorteo[sorteo > 25]))
+            figura_par_impar = str(len(sorteo[sorteo %2 == 0])) +  " / " + str(len(sorteo[sorteo %2 != 0]))
+
+            bajo_alto[figura_bajo_alto] += 1
+            par_impar[figura_par_impar] += 1               
         
         tabla_figuras = PrettyTable()
         # Primera fila, cabecera
@@ -149,7 +144,20 @@ class Sorteo:
             n_pares_impares.append(value)
         tabla_figuras.add_row(n_pares_impares)
         tabla_figuras.set_style(DOUBLE_BORDER)
-        print(tabla_figuras)
+        print(tabla_figuras)   
+    
+    # Generar tablas con distintas estadísticas: 
+    # - Primera tabla: Apariciones por figuras (nº bajos y altos, pares e impares) 
+    # - Segunda tabla: Nº de apariciones por bola y días ausentes.
+    # - Tercera tabla (Euromillones): Igual que la segunda tabla pero para las estrellas.
+    # 
+    def estadisticas(self):
+        # ############
+        # Primera tabla: 
+        #     Número de veces que ha aparicido una figura (nºbajo/alto y par/impar)
+        # ############
+        self.figuras_combinaciones()
+
         # ############
         # Segunda tabla:
         #     Nº de veces que ha aparecido un número.
@@ -166,25 +174,29 @@ class Sorteo:
         ##############
         if self.__nombre_sorteo == "Euromillones":
             bolas_estrellas = 12
-            print("")
-            print("Estrellas")
-            print("")
-            self.apariciones_ausencias(bolas_estrellas, self.__num_adicionales) 
+            titulo = "Estrellas"
+            print("*" * len(titulo))
+            print(titulo)
+            print("*" * len(titulo))
+            estrellas = []
+            for e in range(len(self.__numeros_adicionales)):
+                estrellas.append([int(x) for x in self.__numeros_adicionales[e].split(" ")])               
+            estrellas = np.array(estrellas)
+            self.apariciones_ausencias(bolas_estrellas, estrellas) 
 
         print("Mostrando estadísticas de los últimos ", len(self.__combinaciones), " resultados")
     
 
 if __name__ == "__main__":
-    #sorteo_elegido = Sorteo(["Euromillones","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=20220717&fechaFinInclusiva=20230327", 5, 50])
-    #sorteo_elegido = Sorteo(["El Gordo de la Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=ELGR&celebrados=true&fechaInicioInclusiva=20221206&fechaFinInclusiva=20230308"])
-    #sorteo_elegido = Sorteo(["Bonoloto","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=BONO&celebrados=true&fechaInicioInclusiva=20220205&fechaFinInclusiva=20230308", 6, 49])
-    sorteo_elegido = Sorteo(["Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20221201&fechaFinInclusiva=20230206", 6, 49])
+    #sorteo_elegido = Sorteo(["Euromillones","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=20220717&fechaFinInclusiva=20230327", 5, 2, 50])
+    #sorteo_elegido = Sorteo(["El Gordo de la Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=ELGR&celebrados=true&fechaInicioInclusiva=20220506&fechaFinInclusiva=20230308", 5, 1, 54])
+    #sorteo_elegido = Sorteo(["Bonoloto","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=BONO&celebrados=true&fechaInicioInclusiva=20220205&fechaFinInclusiva=20230308", 6, 2, 49])
+    sorteo_elegido = Sorteo(["Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20221201&fechaFinInclusiva=20230206", 6, 2, 49])
 
     #Primitiva.historial_combinaciones(["Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20221201&fechaFinInclusiva=20230206"])
-    
-    sorteo_elegido.estadisticas()
-    #sorteo_elegido.ultimas_combinaciones()
-    
-    #print(list(sorteo_elegido._Sorteo__combinaciones))
+    #sorteo_elegido.estadisticas()
+    #sorteo_elegido._Sorteo__combinaciones
+    sorteo_elegido.ultimas_combinaciones()
+    print(list(sorteo_elegido._Sorteo__joker))
     # print(list(sorteo_elegido._Sorteo__numeros_bajos_altos))
     #sorteo_elegido._Sorteo__numeros_bajos_altos
