@@ -1,3 +1,8 @@
+#! /usr/bin/env python3
+
+""""
+    Clase para mostrar últimas combinaciones con sus estadísticas
+"""
 import urllib.request
 import json
 from datetime import datetime
