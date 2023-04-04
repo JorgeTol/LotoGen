@@ -5,7 +5,7 @@ import numpy as np
 from prettytable import PrettyTable, DOUBLE_BORDER
 import locale
 
-#locale.setlocale(locale.LC_ALL, 'es_ES.utf8')
+locale.setlocale(locale.LC_ALL, 'es_ES.utf8')
 
 class Sorteo:
     def __init__(self, sorteo_elegido):
