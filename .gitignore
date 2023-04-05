@@ -22,7 +22,7 @@ var/
 wheels/
 share/python-wheels/
 *.egg-info/
-.installed.cfg
+*.cfg
 *.egg
 MANIFEST
 
@@ -120,6 +120,11 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+bin/
+Include/
+Lib/
+Scripts/
+
 .env
 .venv
 env/
