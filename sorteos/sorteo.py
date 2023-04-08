@@ -85,33 +85,22 @@ class Sorteo:
     # Muestra el número de apariciones de una bola y los sorteos que lleva sin aparecer.
     # Return string, tabla.
     def apariciones_ausencias(self, total_bolas, sorteos):
-        tabla = PrettyTable()
-        tabla.field_names = ["Bola", "Apariciones", "Sorteos ausente"]
-        # Creamos el listado de todas las bolas
-        n_bolas = [x for x in range(1, total_bolas + 1)] 
+        # Crear el listado de todas las bolas
+        n_bolas = [x for x in range(1, total_bolas + 1)]        
+        resultado = []
         
         for bola in n_bolas:
             apariciones = len(sorteos[sorteos == bola])
             # Calcular días sin aparecer
             sorteos_ausente = 0
-            for sorteo in  sorteos:
+            for sorteo in sorteos:
                 if bola not in sorteo:
-                    sorteos_ausente += 1                               
+                    sorteos_ausente += 1
                 else:
                     break
-            salida_apariciones = str(apariciones).ljust(3, " ") + "*" * apariciones
-            salida_sorteos_ausente = str(sorteos_ausente).ljust(3, " ") + "*" * sorteos_ausente
-
-            tabla.add_row([bola, salida_apariciones, salida_sorteos_ausente])
-        tabla.set_style(DOUBLE_BORDER)
-        tabla.align["Apariciones"] = "l"
-        tabla.align["Sorteos ausente"] = "l"
-        # Descomentar y/o modificar las siguientes líneas para establecer un orden por columnas.
-        # tabla_apariciones.sortby = "Bola"
-        # tabla_apariciones.reversesort = True
-        tabla.set_style(DOUBLE_BORDER)
-        print(tabla)
-
+            resultado.append([bola, apariciones, sorteos_ausente])
+        return np.array(resultado)
+        
     # Muestra una tabla con las estadísticas por figuras, nº bajo / alto y par / impar
     # Return string, tabla.
     def figuras_combinaciones(self):
@@ -169,7 +158,12 @@ class Sorteo:
         #     Nº de sorteos que lleva sin aparecer un número.
         # ############
         
-        self.apariciones_ausencias(self.__numero_bolas, self.__combinaciones) 
+        tabla = PrettyTable()
+        tabla.field_names = ["Bola", "Apariciones", "Sorteos ausente"]
+        resultados = self.apariciones_ausencias(self.__numero_bolas, self.__combinaciones) 
+        tabla.add_rows(resultados)
+        tabla.set_style(DOUBLE_BORDER)
+        print(tabla)
 
         ##############
         # Tercera tabla:
@@ -187,21 +181,23 @@ class Sorteo:
             for e in range(len(self.__numeros_adicionales)):
                 estrellas.append([int(x) for x in self.__numeros_adicionales[e].split(" ")])               
             estrellas = np.array(estrellas)
-            self.apariciones_ausencias(bolas_estrellas, estrellas) 
-
+            resultados = self.apariciones_ausencias(bolas_estrellas, estrellas) 
+            tabla.clear_rows()
+            tabla.add_rows(resultados)
+            print(tabla)
         print("Mostrando estadísticas de los últimos ", len(self.__combinaciones), " resultados")
     
 
 if __name__ == "__main__":
-    #sorteo_elegido = Sorteo(["Euromillones","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=20220717&fechaFinInclusiva=20230327", 5, 2, 50])
+    sorteo_elegido = Sorteo(["Euromillones","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=20220717&fechaFinInclusiva=20230327", 5, 2, 50])
     #sorteo_elegido = Sorteo(["El Gordo de la Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=ELGR&celebrados=true&fechaInicioInclusiva=20220506&fechaFinInclusiva=20230308", 5, 1, 54])
     #sorteo_elegido = Sorteo(["Bonoloto","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=BONO&celebrados=true&fechaInicioInclusiva=20220205&fechaFinInclusiva=20230308", 6, 2, 49])
-    sorteo_elegido = Sorteo(["Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20221201&fechaFinInclusiva=20230206", 6, 2, 49])
+    #sorteo_elegido = Sorteo(["Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20221201&fechaFinInclusiva=20230206", 6, 2, 49])
 
     #Primitiva.historial_combinaciones(["Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20221201&fechaFinInclusiva=20230206"])
-    #sorteo_elegido.estadisticas()
+    sorteo_elegido.estadisticas()
     #sorteo_elegido._Sorteo__combinaciones
-    sorteo_elegido.ultimas_combinaciones()
-    print(list(sorteo_elegido._Sorteo__joker))
+    #sorteo_elegido.ultimas_combinaciones()
+    #print(list(sorteo_elegido._Sorteo__joker))
     # print(list(sorteo_elegido._Sorteo__numeros_bajos_altos))
     #sorteo_elegido._Sorteo__numeros_bajos_altos
