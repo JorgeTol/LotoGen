@@ -83,7 +83,7 @@ class Sorteo:
         print("Mostrando los últimos ", len(self.__combinaciones), " resultados")
     
     # Muestra el número de apariciones de una bola y los sorteos que lleva sin aparecer.
-    # Return string, tabla.
+    # Return array [bola, apariciones, sorteos ausentes]
     def apariciones_ausencias(self, total_bolas, sorteos):
         # Crear el listado de todas las bolas
         n_bolas = [x for x in range(1, total_bolas + 1)]        
@@ -101,8 +101,8 @@ class Sorteo:
             resultado.append([bola, apariciones, sorteos_ausente])
         return np.array(resultado)
         
-    # Muestra una tabla con las estadísticas por figuras, nº bajo / alto y par / impar
-    # Return string, tabla.
+    # Muestra las estadísticas por figuras, nº bajo / alto y par / impar
+    # Return array [figura, bajos / altos, pares / impares]
     def figuras_combinaciones(self):
         bajo_alto = {}        
         par_impar = {}        
@@ -121,24 +121,31 @@ class Sorteo:
             bajo_alto[figura_bajo_alto] += 1
             par_impar[figura_par_impar] += 1               
         
-        tabla_figuras = PrettyTable()
-        # Primera fila, cabecera
-        titulo_columna = ["Figuras"]
-        for head in bajo_alto.keys():
-            titulo_columna.append(head)
-        tabla_figuras.field_names = titulo_columna
-        # Segunda fila, estadísticas nº bajos y altos
-        n_bajos_altos = ["Bajos / Altos"]
-        for value in bajo_alto.values():
-            n_bajos_altos.append(value)
-        tabla_figuras.add_row(n_bajos_altos)
-        # Tercera fila, estadísticas pares impares
-        n_pares_impares = ["Pares / Impares"]
-        for value in par_impar.values():
-            n_pares_impares.append(value)
-        tabla_figuras.add_row(n_pares_impares)
-        tabla_figuras.set_style(DOUBLE_BORDER)
-        print(tabla_figuras)   
+        figuras = bajo_alto.keys()
+        resul_bajo_alto = bajo_alto.values()
+        resul_par_impar = par_impar.values()
+
+        return np.array([list(figuras), list(resul_bajo_alto), list(resul_par_impar)])
+        
+
+        # tabla_figuras = PrettyTable()
+        # # Primera fila, cabecera
+        # titulo_columna = ["Figuras"]
+        # for head in bajo_alto.keys():
+        #     titulo_columna.append(head)
+        # tabla_figuras.field_names = titulo_columna
+        # # Segunda fila, estadísticas nº bajos y altos
+        # n_bajos_altos = ["Bajos / Altos"]
+        # for value in bajo_alto.values():
+        #     n_bajos_altos.append(value)
+        # tabla_figuras.add_row(n_bajos_altos)
+        # # Tercera fila, estadísticas pares impares
+        # n_pares_impares = ["Pares / Impares"]
+        # for value in par_impar.values():
+        #     n_pares_impares.append(value)
+        # tabla_figuras.add_row(n_pares_impares)
+        # tabla_figuras.set_style(DOUBLE_BORDER)
+        # print(tabla_figuras)   
     
     # Generar tablas con distintas estadísticas: 
     # - Primera tabla: Apariciones por figuras (nº bajos y altos, pares e impares) 
@@ -150,7 +157,15 @@ class Sorteo:
         # Primera tabla: 
         #     Número de veces que ha aparicido una figura (nºbajo/alto y par/impar)
         # ############
-        self.figuras_combinaciones()
+        tabla = PrettyTable()
+        resultados = self.figuras_combinaciones()
+        titulo_columna = ["Figuras"]
+        for cabecera in resultados[0]:
+            titulo_columna.append(cabecera)
+        tabla.field_names = titulo_columna
+        fila_bajo_alto = np.insert(resultados[1], 0, "Bajo / Alto")
+        tabla.add_row(fila_bajo_alto)
+        print(tabla)        
 
         # ############
         # Segunda tabla:
@@ -161,7 +176,14 @@ class Sorteo:
         tabla = PrettyTable()
         tabla.field_names = ["Bola", "Apariciones", "Sorteos ausente"]
         resultados = self.apariciones_ausencias(self.__numero_bolas, self.__combinaciones) 
-        tabla.add_rows(resultados)
+        for resultado in resultados:
+            tabla.add_row([
+                resultado[0],
+                str(resultado[1]) + " " + "*" * resultado[1],
+                str(resultado[2]) + " " + "*" * resultado[2]
+            ])
+        tabla.align["Apariciones"] = "l"
+        tabla.align["Sorteos ausente"] = "l"
         tabla.set_style(DOUBLE_BORDER)
         print(tabla)
 
@@ -183,7 +205,13 @@ class Sorteo:
             estrellas = np.array(estrellas)
             resultados = self.apariciones_ausencias(bolas_estrellas, estrellas) 
             tabla.clear_rows()
-            tabla.add_rows(resultados)
+            for resultado in resultados:
+                tabla.add_row([
+                    resultado[0],
+                    str(resultado[1]) + " " + "*" * resultado[1],
+                    str(resultado[2]) + " " + "*" * resultado[2]
+                ])
+            
             print(tabla)
         print("Mostrando estadísticas de los últimos ", len(self.__combinaciones), " resultados")
     
