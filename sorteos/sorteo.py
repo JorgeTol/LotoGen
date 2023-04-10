@@ -82,7 +82,7 @@ class Sorteo:
         print(tabla)
         print("Mostrando los últimos ", len(self.__combinaciones), " resultados")
     
-    # Muestra el número de apariciones de una bola y los sorteos que lleva sin aparecer.
+    # Devuelve el número de apariciones de una bola y los sorteos que lleva sin aparecer.
     # Return array [bola, apariciones, sorteos ausentes]
     def apariciones_ausencias(self, total_bolas, sorteos):
         # Crear el listado de todas las bolas
@@ -101,7 +101,7 @@ class Sorteo:
             resultado.append([bola, apariciones, sorteos_ausente])
         return np.array(resultado)
         
-    # Muestra las estadísticas por figuras, nº bajo / alto y par / impar
+    # Devuelve las estadísticas por figuras, nº bajo / alto y par / impar
     # Return array [figura, bajos / altos, pares / impares]
     def figuras_combinaciones(self):
         bajo_alto = {}        
@@ -127,27 +127,8 @@ class Sorteo:
 
         return np.array([list(figuras), list(resul_bajo_alto), list(resul_par_impar)])
         
-
-        # tabla_figuras = PrettyTable()
-        # # Primera fila, cabecera
-        # titulo_columna = ["Figuras"]
-        # for head in bajo_alto.keys():
-        #     titulo_columna.append(head)
-        # tabla_figuras.field_names = titulo_columna
-        # # Segunda fila, estadísticas nº bajos y altos
-        # n_bajos_altos = ["Bajos / Altos"]
-        # for value in bajo_alto.values():
-        #     n_bajos_altos.append(value)
-        # tabla_figuras.add_row(n_bajos_altos)
-        # # Tercera fila, estadísticas pares impares
-        # n_pares_impares = ["Pares / Impares"]
-        # for value in par_impar.values():
-        #     n_pares_impares.append(value)
-        # tabla_figuras.add_row(n_pares_impares)
-        # tabla_figuras.set_style(DOUBLE_BORDER)
-        # print(tabla_figuras)   
     
-    # Generar tablas con distintas estadísticas: 
+    # Imprimit tablas con distintas estadísticas: 
     # - Primera tabla: Apariciones por figuras (nº bajos y altos, pares e impares) 
     # - Segunda tabla: Nº de apariciones por bola y días ausentes.
     # - Tercera tabla (Euromillones): Igual que la segunda tabla pero para las estrellas.
@@ -165,6 +146,7 @@ class Sorteo:
         tabla.field_names = titulo_columna
         fila_bajo_alto = np.insert(resultados[1], 0, "Bajo / Alto")
         tabla.add_row(fila_bajo_alto)
+        tabla.set_style(DOUBLE_BORDER)
         print(tabla)        
 
         # ############
@@ -172,19 +154,18 @@ class Sorteo:
         #     Nº de veces que ha aparecido un número.
         #     Nº de sorteos que lleva sin aparecer un número.
         # ############
-        
         tabla = PrettyTable()
         tabla.field_names = ["Bola", "Apariciones", "Sorteos ausente"]
         resultados = self.apariciones_ausencias(self.__numero_bolas, self.__combinaciones) 
         for resultado in resultados:
             tabla.add_row([
                 resultado[0],
-                str(resultado[1]) + " " + "*" * resultado[1],
-                str(resultado[2]) + " " + "*" * resultado[2]
+                f"{str(resultado[1]):<2} " + "*" * resultado[1],
+                f"{str(resultado[2]):<2} " + "*" * resultado[2]
             ])
         tabla.align["Apariciones"] = "l"
-        tabla.align["Sorteos ausente"] = "l"
-        tabla.set_style(DOUBLE_BORDER)
+        tabla.align["Sorteos ausente"] = "l" 
+        tabla.set_style(DOUBLE_BORDER)      
         print(tabla)
 
         ##############
@@ -208,13 +189,15 @@ class Sorteo:
             for resultado in resultados:
                 tabla.add_row([
                     resultado[0],
-                    str(resultado[1]) + " " + "*" * resultado[1],
-                    str(resultado[2]) + " " + "*" * resultado[2]
-                ])
-            
+                    f"{str(resultado[1]):<2} " + "*" * resultado[1],
+                    f"{str(resultado[2]):<2} " + "*" * resultado[2]
+                ])            
             print(tabla)
         print("Mostrando estadísticas de los últimos ", len(self.__combinaciones), " resultados")
     
+
+            
+
 
 if __name__ == "__main__":
     sorteo_elegido = Sorteo(["Euromillones","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=20220717&fechaFinInclusiva=20230327", 5, 2, 50])
