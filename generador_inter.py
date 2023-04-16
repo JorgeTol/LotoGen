@@ -40,6 +40,16 @@ list_lottery = {
 
 options_lottery = {0: "Volver al menú principal",  1: "Ver ultimos sorteos", 2: "Estadísticas", 3: "Generar combinaciones"} # Opciones por juego
 options_generator = {0: "Volver al menú principal", 1: "Basado en las estadísticas", 2: "Utilizando un modelo de Aprendizaje Automático"}
+
+# Formatea la salida de los mensajes en Exceptions:
+# Return str
+def mensaje_error(args):
+    print("\n" + "*" * 20 + " ERROR " + "*" * 20)
+    if len(args) > 0:
+        for error in args:
+            print("\t" + error)
+    print("*" * 47 + "\n")
+
 # Imprimir listado con opciones para los menús
 # Return str
 def print_menu(items, incluye_list = False): 
@@ -49,47 +59,38 @@ def print_menu(items, incluye_list = False):
             opcion = items[key][0]
         else:
             opcion = items[key]
-        print(" " * 10, str(key) + ".", opcion)   
- 
-# Menú opciones para la opción generar combinaciones
+        print("\t" + str(key), opcion)
+# Menú opciones para la función generar combinaciones
+# Return int
 def menu_generador(num_loteria):
-    #sorteo_generar = sorteo.GeneradorComBinaciones(list_lottery[num_loteria])
     while True:
         try:
             print("""
-            El generador tiene 2 modos para crear las distintas combinaciones:
-                - Basado en las estadísticas. Figuras de las combinaciones (nº bajos / nº altos, pares / impares), apariciones y sorteos ausentes.
-                  Usa las estadísticas de los últimos 80 sorteos, se actualiza automáticamente. Crea una combinación con las siguientes reglas:
-                      * Figuras. Crea las que mas aparecen.
-                      * Apariciones. Utiliza una ponderación mayor con los números que menos han aparecido.
-                      * Sorteos. Utiliza una ponderación mayor con los números que llevan mas tiempo sin aparecen.
-                - Utilizando un modelo de Aprendizaje Automático, con los registros de los últimos sorteos crea posibles combinaciones.
+    El generador tiene 2 modos para crear las distintas combinaciones:
+        - Basado en las estadísticas.Se actualiza automáticamente. Crea una combinación con las siguientes reglas:
+              * Figuras. Crea las que mas aparecen. Nº bajo / Nº alto, par / impar
+              * Ausencias. Genera las combinaciones con los números que llevan ausentes mas del número de sorteos que se elijan.
+              * Apariciones. Utiliza una ponderación mayor con los números que llevan mas tiempo sin aparecen.
+        - Utilizando un modelo de Aprendizaje Automático, con los registros de los últimos sorteos crea posibles combinaciones.
             """)
             print_menu(options_generator)
-            modo_generador = int(input(
+            generador_elegido = int(input(
                 "[ " + list_lottery[num_loteria][0].upper() + " ]"+ 
                 " Elije una opción  (" + str(min(options_generator.keys())) + "-" +  str(max(options_generator.keys())) + "): ")
                 )
-            print(modo_generador)
-            if modo_generador not in options_generator.keys():
-                print("*" * 20)
-                print("ERROR. El número", modo_generador, "no es una opción correcta.")
-                print("*" * 20)                
-            else:
-                if modo_generador == 0:
-                    break
-                else:
-                    print(modo_generador)
+            if generador_elegido not in options_generator.keys():
+                raise Exception(f"El número {generador_elegido}, no es una opción correcta.")           
+            
         except ValueError:
-            print("*" * 20)
-            print("ERROR. Sólo números. ")
-            print("*" * 20)     
+            errores = ("Sólo se admiten números",)
+            mensaje_error(errores)     
         except Exception as ex:
-            print("Ocurrio un error.", ex.args )
+            mensaje_error(ex.args)
+    
+        else:
+            return generador_elegido
 
-
-# Generar un menú con opciones a realizar con el sorteo elegido
-# Return int
+# Genera un menú con opciones a realizar con el sorteo elegido
 def lottery_menu(num_loteria): 
     sorteo_elegido = sorteo.Sorteo(list_lottery[num_loteria])      
     while True:          
@@ -107,9 +108,7 @@ def lottery_menu(num_loteria):
                 )
             
             if user_select_options not in options_lottery.keys():
-                print("*" * 20)
-                print("ERROR. El número", user_select_options, "no es una opción correcta.")
-                print("*" * 20)                
+                raise Exception(f"El número {user_select_options} no es una opción correcta.")
             else:
                 if user_select_options == 0:
                     break
@@ -119,13 +118,15 @@ def lottery_menu(num_loteria):
                     if user_select_options == 2:
                         sorteo_elegido.estadisticas()
                     if user_select_options == 3:
-                        menu_generador(num_loteria)            
+                        if user_select_options == 0:
+                            break
+                        if menu_generador(num_loteria) == 1:
+                            sorteo_elegido.combinaciones_por_estadisticas()                        
         except ValueError:
-            print("*" * 20)
-            print("ERROR. Sólo números. ")
-            print("*" * 20)     
+            errores = ("Sólo se admiten números",)
+            mensaje_error(errores)     
         except Exception as ex:
-            print("Ocurrio un error.", ex.args )
+            mensaje_error(ex.args)
     main_menu()
     
 # Menú principal, mostrar listados de sortéos y selección.
@@ -143,21 +144,16 @@ def main_menu():
         try:
             user_select_lottery = int(input("Elige un número (" + str(min(list_lottery.keys())) + "-" +  str(max(list_lottery.keys())) + "): ")) 
             if user_select_lottery not in list_lottery.keys():
-                print("*" * 20)
-                print("ERROR. El número", user_select_lottery, "no es una opción correcta.") 
-                print("*" * 20)
+                raise Exception(f"El número {user_select_lottery} no es una opción correcta.") 
             elif user_select_lottery == 0:
                 quit() 
             else:
                 break                     
         except ValueError:
-            print("*" * 20)
-            print("ERROR. Sólo números. ") 
-            print("*" * 20)
+            errores = ("Sólo se admiten números",)
+            mensaje_error(errores)
         except Exception as ex:
-            print("*" * 20)
-            print("ERROR: ", ex.args)
-            print("*" * 20)                 
+            mensaje_error(ex.args)                 
     lottery_menu(user_select_lottery)
 
 main_menu()

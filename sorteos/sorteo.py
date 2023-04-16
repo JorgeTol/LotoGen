@@ -88,9 +88,10 @@ class Sorteo:
         # Crear el listado de todas las bolas
         n_bolas = [x for x in range(1, total_bolas + 1)]        
         resultado = []
-        
+        num_sorteos = len(sorteos)
         for bola in n_bolas:
             apariciones = len(sorteos[sorteos == bola])
+            porcentaje = int((apariciones / num_sorteos) * 100)
             # Calcular días sin aparecer
             sorteos_ausente = 0
             for sorteo in sorteos:
@@ -98,7 +99,7 @@ class Sorteo:
                     sorteos_ausente += 1
                 else:
                     break
-            resultado.append([bola, apariciones, sorteos_ausente])
+            resultado.append([bola, apariciones, porcentaje, sorteos_ausente])
         return np.array(resultado)
         
     # Devuelve las estadísticas por figuras, nº bajo / alto y par / impar
@@ -120,15 +121,14 @@ class Sorteo:
 
             bajo_alto[figura_bajo_alto] += 1
             par_impar[figura_par_impar] += 1               
-        
         figuras = bajo_alto.keys()
         resul_bajo_alto = bajo_alto.values()
         resul_par_impar = par_impar.values()
-
-        return np.array([list(figuras), list(resul_bajo_alto), list(resul_par_impar)])
+        
+        return np.array([list(figuras), list(resul_bajo_alto), list(resul_par_impar)], dtype=object)
         
     
-    # Imprimit tablas con distintas estadísticas: 
+    # Imprime tablas con distintas estadísticas: 
     # - Primera tabla: Apariciones por figuras (nº bajos y altos, pares e impares) 
     # - Segunda tabla: Nº de apariciones por bola y días ausentes.
     # - Tercera tabla (Euromillones): Igual que la segunda tabla pero para las estrellas.
@@ -145,7 +145,9 @@ class Sorteo:
             titulo_columna.append(cabecera)
         tabla.field_names = titulo_columna
         fila_bajo_alto = np.insert(resultados[1], 0, "Bajo / Alto")
+        fila_par_impar = np.insert(resultados[2], 0, "Par / Impar")
         tabla.add_row(fila_bajo_alto)
+        tabla.add_row(fila_par_impar)
         tabla.set_style(DOUBLE_BORDER)
         print(tabla)        
 
@@ -155,13 +157,14 @@ class Sorteo:
         #     Nº de sorteos que lleva sin aparecer un número.
         # ############
         tabla = PrettyTable()
-        tabla.field_names = ["Bola", "Apariciones", "Sorteos ausente"]
+        tabla.field_names = ["Bola", "Apariciones", "% apariciones", "Sorteos ausente"]
         resultados = self.apariciones_ausencias(self.__numero_bolas, self.__combinaciones) 
         for resultado in resultados:
             tabla.add_row([
                 resultado[0],
                 f"{str(resultado[1]):<2} " + "*" * resultado[1],
-                f"{str(resultado[2]):<2} " + "*" * resultado[2]
+                f"{str(resultado[2]):<2}",
+                f"{str(resultado[3]):<2} " + "*" * resultado[3]
             ])
         tabla.align["Apariciones"] = "l"
         tabla.align["Sorteos ausente"] = "l" 
@@ -190,23 +193,114 @@ class Sorteo:
                 tabla.add_row([
                     resultado[0],
                     f"{str(resultado[1]):<2} " + "*" * resultado[1],
-                    f"{str(resultado[2]):<2} " + "*" * resultado[2]
+                    f"{str(resultado[2]):<2} ",
+                    f"{str(resultado[3]):<2} " + "*" * resultado[3]
                 ])            
             print(tabla)
         print("Mostrando estadísticas de los últimos ", len(self.__combinaciones), " resultados")
     
+    # Genera combinaciones utilizando las estadísticas, se pueden seleccionar todas (demasiado restrictivo) o sólo algunas comentando código
+    # 1- Excluir las bolas que han aparecido en los últimos sorteos, por defecto 1
+    # 2- Excluir las bolas que están por encima de la media de porcentaje de apariciones.
+    # 3- Al generar las combinaciones, dar mas peso a las bolas con menor porcentaje de apariciones
+    def combinaciones_por_estadisticas(self):
+        estadisticas = self.apariciones_ausencias(self.__numero_bolas, self.__combinaciones)
+        bolas_seleccionadas = estadisticas[:]
+        
+        # [Activación / Desactivación, valor de los filtros]
+        filtros = {
+            "Ausencias" : [True, 1],
+            "Media porcentaje": [True, round(np.mean(estadisticas[:,2]),2)],
+            "peso por porcentaje": True,
+            "maximo resultados": 50 # Cantidad máxima de combinaciones a generar
+        }       
+        # 1- Seleccionar las bolas que cumplen el filtro de en sorteos ausentes.
+        if filtros["Ausencias"][0]:
+            while True:
+                try:
+                    input_sorteos_ausentes = input("Excluir las bolas que han aparecido en los últimos sorteos: [Por defecto " + str(filtros["Ausencias"][1]) + "] ")
+                    assert input_sorteos_ausentes.isdigit() or input_sorteos_ausentes == "", "Solo números"
+                    if input_sorteos_ausentes == "":
+                        input_sorteos_ausentes = filtros["Ausencias"][1]
+                    break
+            
+                except Exception as ex:
+                    print(ex.args)
 
+            bolas_seleccionadas = bolas_seleccionadas[bolas_seleccionadas[:, 3] > input_sorteos_ausentes]
+        
+        # 2- Seleccionar las bolas que cumplen el filtro de número de apariciones por debajo de la media en porcentaje.
+        if filtros["Media porcentaje"]:            
+            while True:   
+                try:
+                    input_media_porcentaje_apariciones = input("Excluir las bolas que tengan un porcentaje de aparición superior a: [Por defecto " + str(filtros["Media porcentaje"][1]) + "%] ")
+                    assert input_media_porcentaje_apariciones.isdigit() or input_media_porcentaje_apariciones == "", "Solo números"
+                    if input_media_porcentaje_apariciones == "":
+                        input_media_porcentaje_apariciones = filtros["Media porcentaje"][1]               
+                    break
+
+                except Exception as ex:
+                    print(ex.args)  
+
+            bolas_seleccionadas = bolas_seleccionadas[bolas_seleccionadas[:, 2] < input_media_porcentaje_apariciones]       
+        
+        # 3- Dar mas probabilidades de aparecer en la combinacion a las bolas con menos apariciones y viceversa.
+        if filtros["peso por porcentaje"]:
+            ### Asignar a cada porcentaje de aparición de cada bola un valor population
+            # Sacar los porcentajes únicos que hay en la tabla
+            listado_porcentajes = np.flip(np.unique(bolas_seleccionadas[:, 2])) 
+            # Crear la escala de population con tantos niveles como porcenajes existan.
+            valores_population = np.linspace(0.00, 0.90, len(listado_porcentajes)) 
+                        
+            # Asignar los valores population a cada porcentaje {porcentajes : valor_population}
+            dictionario = {listado_porcentajes[i]: valores_population[i] for i in range(len(listado_porcentajes))}
+            # Asociar los valores population a cada bola según su porcentaje
+            # Crear un array con los valores population que coincide en número y orden con las bolas seleccionadas
+            valores_population = np.array([dictionario[b[2]] for b in bolas_seleccionadas])
+            # Normalizar population (parametro de random.choice) para que la suma total sea 1 aprox.
+            valores_population /= valores_population.sum()
+        
+        numero_resultados = 0
+        # Extraer las figuras que mas apariciones tiene, dicha figura se aplicará a generador de combinaciones
+        figuras = self.figuras_combinaciones()
+        lista_bajos_altos = figuras[1].tolist() 
+        index_max_fig_bajo = lista_bajos_altos.index(max(lista_bajos_altos)) # Buscar el índice del mayor valor
+        cantidad_numeros_bajos = figuras[0][index_max_fig_bajo][0]
+        lista_pares_impares = figuras[2].tolist() 
+        index_max_fig_par = lista_pares_impares.index(max(lista_pares_impares)) # Buscar el índice del mayor valor
+        cantidad_numeros_pares = figuras[0][index_max_fig_par][0]
+        
+        resultados = np.empty((0, self.__cantidad_bolas_combinacion), int)
+        while numero_resultados < filtros["maximo resultados"]:
+            if filtros["peso por porcentaje"]:
+                combinacion = np.sort(np.random.choice(bolas_seleccionadas[:,0], self.__cantidad_bolas_combinacion, replace=False, p=valores_population))
+            else:
+                combinacion = np.sort(np.random.choice(bolas_seleccionadas[:,0], self.__cantidad_bolas_combinacion, replace=False))
+
+            # Filtra las combinaciones que cumplen con las figuras con mas apariciones
+            if (len(combinacion[combinacion < 26]) == int(cantidad_numeros_bajos)) and (len(combinacion[combinacion % 2 == 0]) == int(cantidad_numeros_pares)):
+                if True:
+                    resultados = np.append(resultados, [combinacion], axis=0)
+                    numero_resultados += 1  
+        
+        print(resultados)
+        print(f"Total de combinaciones generadas: {numero_resultados:>5}")
+        print(f"Figura bajo / alto: {figuras[0][index_max_fig_bajo]:>22}")
+        print(f"Figura par / impar: {figuras[0][index_max_fig_par]:>22}")
+        
+        tabla = PrettyTable()
             
 
 
 if __name__ == "__main__":
-    sorteo_elegido = Sorteo(["Euromillones","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=20220717&fechaFinInclusiva=20230327", 5, 2, 50])
-    #sorteo_elegido = Sorteo(["El Gordo de la Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=ELGR&celebrados=true&fechaInicioInclusiva=20220506&fechaFinInclusiva=20230308", 5, 1, 54])
+    #sorteo_elegido = Sorteo(["Euromillones","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=20220517&fechaFinInclusiva=20230427", 5, 2, 50])
+    sorteo_elegido = Sorteo(["El Gordo de la Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=ELGR&celebrados=true&fechaInicioInclusiva=20220506&fechaFinInclusiva=20230308", 5, 1, 54])
     #sorteo_elegido = Sorteo(["Bonoloto","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=BONO&celebrados=true&fechaInicioInclusiva=20220205&fechaFinInclusiva=20230308", 6, 2, 49])
     #sorteo_elegido = Sorteo(["Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20221201&fechaFinInclusiva=20230206", 6, 2, 49])
 
     #Primitiva.historial_combinaciones(["Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20221201&fechaFinInclusiva=20230206"])
-    sorteo_elegido.estadisticas()
+    sorteo_elegido.combinaciones_por_estadisticas()
+    #sorteo_elegido.estadisticas()
     #sorteo_elegido._Sorteo__combinaciones
     #sorteo_elegido.ultimas_combinaciones()
     #print(list(sorteo_elegido._Sorteo__joker))
