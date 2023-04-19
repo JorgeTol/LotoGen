@@ -1,10 +1,17 @@
+<p align="left">
+   <img src="https://img.shields.io/badge/STATUS-EN%20DESAROLLO-green?style=plastic&logo=appveyor">
+   <img src="https://img.shields.io/badge/PYTHON-3.10-blue?style=plastic&logo=appveyor">
+   <img src="https://img.shields.io/badge/Platform-win | ios | linux-grey?style=plastic&logo=appveyor">
+</p>
+
 # Loterias y apuestas
+
 ## Introducción
-Este repositorio desarrollado integramente en Python se creó originalmente como parte de un ejercicio de aprendizaje de dicho lenguaje. Posteriormente se ha ido desarrollando e implementando mas funciones, además de las que se irán añadiendo en un futuro junto.
-Siéntete libre de aportar nuevas funcionalidades, sujerencias de mejoras de código o cualquier otra idea.
+Este repositorio desarrollado integramente en Python se creó originalmente como parte de un ejercicio de aprendizaje de dicho lenguaje. Posteriormente se ha ido desarrollando e implementando más funciones, además de las que se irán añadiendo en un futuro.
+Siéntete libre de aportar nuevas funcionalidades, sugerencias de mejoras de código o cualquier otra idea.
 
 ## ¿Qué hace esta aplicación?
-Realiza consultas sobre los últimos 80 sorteos, estadísticas y genera combinaciones.
+Realiza consultas y análisis sobre los últimos sorteos, creando estadísticas y generando combinaciones.
 
 Actualmente están disponibles los siguienes sorteos:
 - Primitiva.
@@ -17,6 +24,7 @@ Con cada sorteo hay varias operaciones que se pueden realizar:
 - Estadísticas:
     * Apariciones por figura *numeros altos / numeros bajos, pares / impares*.
     * Nº de veces que ha salido un número.
+    * Porcentaje de apariciones.
     * Nº de sortéos que un número está ausente.
 - Generador de combinaciones:
     * En base a las estadísticas.
@@ -40,3 +48,20 @@ Con cada sorteo hay varias operaciones que se pueden realizar:
     </tr>
   </tbody>
 </table>
+
+## Instalación
+El repositorio puede ejecutarse en cualquier computadora que tenga Python instalado, recomendable la versión 3.10, no se han realizado test en versiones anteriores.
+
+Para comprobar la version, en windows ejecutar CMD, en IOs y Linux ejercutar la terminal.
+
+```python3 --version```. Debería de mostrar algo así ```Python 3.10.x```
+
+Plataformas:
+- Linux. Viene instalado por defecto en todas las distribuciones. En caso de no tener la versión correcta
+
+```sudo apt update```
+
+```sudo apt install python3.10```
+
+
+- Windows
