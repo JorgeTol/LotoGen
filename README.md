@@ -44,7 +44,7 @@ Con cada sorteo hay varias operaciones que se pueden realizar:
     <tr>
       <td>
         <p>Los juego de azar son eso, azar. No es posible predecir o adivinar una combinación de números y más cuando las posibilidades son elevadísimas.
-        Este repositorio está creado con fines de aprendizaje, poder visualizar las combinaciones de los sorteos realizados, consultar estadísticas y generar **posibles** combinaciones. **No utilizar para hacer un número de apuestas que no te puedes permitir. Juega con moderación.**
+        Este repositorio está creado con fines de aprendizaje, poder visualizar las combinaciones de los sorteos realizados, consultar estadísticas y generar ** posibles ** combinaciones. ** No utilizar para hacer un número de apuestas que no te puedes permitir. Juega con moderación. **
     </tr>
   </tbody>
 </table>
