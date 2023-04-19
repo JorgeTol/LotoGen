@@ -63,5 +63,18 @@ Plataformas:
 
 ```sudo apt install python3.10```
 
+- Windows y macOS. Descargar el instalador desde la página de Python https://www.python.org/downloads/ y seguir las instrucciones.
 
-- Windows
+Descargar el repositorio directamente desde la opción de descargas o utilizando Git.
+
+```https://github.com/JorgeTol/LotoGen.git```
+
+Una vez descargado nos ubicamos en la carpeta e instalamos las dependencias necesarias
+
+```pip install -r requirements.txt```
+
+En el caso de tener que instalar pip (Es un gestor de paquetes) en el siguiente enlace tienes los pasos https://pip.pypa.io/en/stable/installation/
+
+Si no ha ocurrido ningún error ya se puede ejecutar el repositorio.
+
+
