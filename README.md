@@ -11,7 +11,7 @@ Este repositorio está desarrollado integramente en Python y utiliza algunas dep
 Siéntete libre de aportar nuevas funcionalidades, sugerencias de mejoras de código o cualquier otra idea o error que puedas encontrar.
 
 ## ¿Qué hace esta aplicación?
-Realiza consultas y análisis sobre los últimos sorteos, creando estadísticas y generando combinaciones. Todo desde la terminal de Linux o Ios y terminal CMD de windows.
+Realiza consultas y análisis sobre los últimos sorteos, creando estadísticas y generando combinaciones. Todo desde la terminal de Linux o Mac y terminal CMD de windows.
 
 Actualmente están disponibles los siguienes sorteos:
 - Primitiva.
@@ -44,7 +44,7 @@ Con cada sorteo hay varias operaciones que se pueden realizar:
     <tr>
       <td>
         <p>Los juego de azar son eso, azar. No es posible predecir o adivinar una combinación de números y más cuando las posibilidades son elevadísimas.
-        Este repositorio está creado con fines de aprendizaje, poder visualizar las combinaciones de los sorteos realizados, consultar estadísticas y generar <b>posibles</b> combinaciones. <b>No utilizar para hacer un número de apuestas que no te puedes permitir. Juega con moderación.</b>
+        Este repositorio está creado con fines de aprendizaje, poder visualizar las combinaciones de los sorteos realizados, consultar estadísticas y generar <b>posibles</b> combinaciones. <b>No utilizar para hacer un número de apuestas que no te puedas permitir. Juega con moderación.</b>
     </tr>
   </tbody>
 </table>
@@ -79,7 +79,8 @@ Si no ha ocurrido ningún error ya se puede ejecutar el repositorio.
 
 ## Comenzando
 
-Ejecutar ```python generador_inter.py``` . 
+Ejecutar ```python generador_inter.py```.
+> Si hay varias versiones de python en el sistema y no está por defecto activada la version 3 ```python3 generador_inter.py```
 
 Elegir el número correspondiente al sorteo. 
 
@@ -91,14 +92,16 @@ Aparecerá un submenú con opciones a realizar.
 
 ## Ultimos sorteos.
 
-En la tabla se muestran los últimos 80 sorteos con la fecha, combinación, números adicionales (reintegro, complementarios, estrellas, etc) y una breve figura y estadística de la combinación. Los datos se actualizan automáticamente.
+En la tabla se muestran los últimos 80 sorteos realizados, incluye la fecha, combinación, números adicionales (reintegro, complementarios, estrellas, etc) y una breve figura y estadística de la combinación. Los datos se actualizan automáticamente.
 
 ## Estadísticas.
 
 Genera dos tablas con las estadísticas de los últimos sorteos:
 
-- 1ª tabla. Nº de apariciones por figura de la combinación. Números bajos (<26) / números altos (>25), números pares / números impares.
-- 2ª tabla. Listado de todas las bolas que entran en juego más número de apariciones, porcentaje de apariciones y sorteos ausentes.
+- 1ª tabla. Estadísticas de las figuras de la combinación. Números bajos (<26) / números altos (>25), números pares / números impares.
+- 2ª tabla. Estadísticas de las bolas que entran en juego, número de apariciones, porcentaje de apariciones y sorteos ausentes.
+
+En el sorteo de Euromillones también mostrará las estadísticas de las estrellas.
 
 ## Generar combinaciones.
 
@@ -110,28 +113,27 @@ Partiendo de la teoría de que todas las bolas tienen las mismas posibilidades d
 
 > Entonces, las que han salido muy pocas veces o llevan varios sorteos sin salir tienen mas probabilidades se aparecer.
 
-Las figuras de las combinaciones indican la caracterísicas de las bolas que la forman y siempre hay unas figuras que se repiten más que otras.
+Las figuras de las combinaciones indican la relación de las bolas que la forman y siempre hay unas figuras que se repiten más que otras.
 
 > Entonces, las combinaciones con las figuras mas repetidas tienen mas probabilidades de aparecer.
 
 El generador utiliza los siguientes filtros:
- - Ausencias. Excluye las bolas que han aparecido en el último sorteo. 
+ - Ausencias. Excluye las bolas que han aparecido en los últimos sorteos. Por defecto está seleccionado 1. 
  - Porcentaje de apariciones. Excluye las bolas que están por encima de la media.
- - Número de apariciones. Hace una ponderación para que haya más probabilidades de aparecer las bolas que menos porcentaje tengan.
+ - Figuras. Las combinaciones que genera cumplen las figuras que mas se han repedido en los últimos sorteos.
+ - Número de apariciones. Hace una ponderación para que haya más probabilidades de aparecer las bolas que menos porcentaje tengan.  
  
  > Los anteriores parámetros son modificables. Durante el proceso se pedirá si se dedice modificar, dejar en blanco para mantener los valores por defecto.
  
  - Las combinaciones generadas tendrán las figuras que mas veces han aparecido en las estadísticas.
  
- Por defecto genera un total de 500 combinaciones. Se puede elegir que filtros quitar o añadir editando directamente el código en el archivo *sorteos/sorteo.py* , cambiando ```True``` por ```False```.
+ Por defecto genera un total de 1000 combinaciones. Se puede elegir que filtros quitar o añadir editando directamente el código en el archivo *sorteos/sorteo.py* , cambiando ```True``` por ```False```.
  
- ``` [Activación / Desactivación, valor de los filtros]
-        filtros = {
-            "Ausencias" : [True, 1],
-            "Media porcentaje": [True, round(np.mean(estadisticas[:,2]),2)],
-            "peso por porcentaje": True,
-            "maximo resultados": 500 # Cantidad máxima de combinaciones a generar
-        } 
+ ``` 
+AUSENCIAS = True   # Incluir los números que llevan X sorteos sin salir.
+PORCENTAJE = True  # Incluir los números que tienen una media de apariciones por debajo de la media.
+FIGURAS = True     # Aplicar el filtro de figuras que mas se repiten. Nº bajo / Nº alto, pares / impares
+POPULATION = False # Dar más probabilidades de aparición a los números que tienen un menor porcentaje de apariciones.
  ```
  
  En la consola se mostrará una tabla con la configuración y las primeras combinaciones generadas. En la carpeta raiz *pronosticos* se guardará un archivo de texto con todas las combinaciones
