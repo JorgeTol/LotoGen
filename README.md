@@ -7,11 +7,11 @@
 # Loterias y apuestas
 
 ## Introducción
-Este repositorio desarrollado integramente en Python se creó originalmente como parte de un ejercicio de aprendizaje de dicho lenguaje. Posteriormente se ha ido desarrollando e implementando más funciones, además de las que se irán añadiendo en un futuro.
-Siéntete libre de aportar nuevas funcionalidades, sugerencias de mejoras de código o cualquier otra idea.
+Este repositorio está desarrollado integramente en Python y utiliza algunas dependencias como Numpy. El proyecto siguen desarrollo, se irán implementando más funciones y mejorando las que ya tiene.
+Siéntete libre de aportar nuevas funcionalidades, sugerencias de mejoras de código o cualquier otra idea o error que puedas encontrar.
 
 ## ¿Qué hace esta aplicación?
-Realiza consultas y análisis sobre los últimos sorteos, creando estadísticas y generando combinaciones.
+Realiza consultas y análisis sobre los últimos sorteos, creando estadísticas y generando combinaciones. Todo desde la terminal de Linux o Ios y terminal CMD de windows.
 
 Actualmente están disponibles los siguienes sorteos:
 - Primitiva.
@@ -25,11 +25,11 @@ Con cada sorteo hay varias operaciones que se pueden realizar:
     * Apariciones por figura *numeros altos / numeros bajos, pares / impares*.
     * Nº de veces que ha salido un número.
     * Porcentaje de apariciones.
-    * Nº de sortéos que un número está ausente.
+    * Nº de sorteos que lleva sin aparecer.
 - Generador de combinaciones:
     * En base a las estadísticas.
-    * Utilizando un modelo de aprendizaje automático.
-    * Backtest. *Proximamente*
+    * Utilizando un modelo de aprendizaje automático. *Proximamente*
+    * Backtest. Consulta los premios que se hubieran obtenido con la configuración elegida en el último sorteo. *Proximamente*
 
 <table>
   <thead>
@@ -67,9 +67,9 @@ Plataformas:
 
 Descargar el repositorio directamente desde la opción de descargas o utilizando Git.
 
-```https://github.com/JorgeTol/LotoGen.git```
+```git clone https://github.com/JorgeTol/LotoGen.git```
 
-Una vez descargado nos ubicamos en la carpeta e instalamos las dependencias necesarias
+Una vez descargado nos ubicamos en la carpeta e instalamos las dependencias necesarias con el siguiente comando.
 
 ```pip install -r requirements.txt```
 
@@ -81,7 +81,9 @@ Si no ha ocurrido ningún error ya se puede ejecutar el repositorio.
 
 Ejecutar ```python generador_inter.py``` . 
 
-Elegir el número correspondiente al sorteo. Aparecerá un submenú con opciones a realizar.
+Elegir el número correspondiente al sorteo. 
+
+Aparecerá un submenú con opciones a realizar.
 
 - Ultimos sorteos.
 - Estadísticas.
