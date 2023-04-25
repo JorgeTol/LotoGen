@@ -84,15 +84,17 @@ Ejecutar ```python generador_inter.py```.
 
 Elegir el número correspondiente al sorteo. 
 
+<img alt="Menú con un listado para elegir la Loteria." src="https://github.com/JorgeTol/LotoGen/blob/develop/img/Select_loterias.png">
+
 Aparecerá un submenú con opciones a realizar.
 
-- Ultimos sorteos.
-- Estadísticas.
-- Generar combinaciones.
+<img alt="Opciones a realizar con el sorteo elegido." src="https://github.com/JorgeTol/LotoGen/blob/develop/img/Select_options.png">
 
 ## Ultimos sorteos.
 
 En la tabla se muestran los últimos 80 sorteos realizados, incluye la fecha, combinación, números adicionales (reintegro, complementarios, estrellas, etc) y una breve figura y estadística de la combinación. Los datos se actualizan automáticamente.
+
+<img alt="Tabla con los resultados de la lotería." src="https://github.com/JorgeTol/LotoGen/blob/develop/img/Ejemplo_tabla_sorteos.png">
 
 ## Estadísticas.
 
@@ -103,9 +105,13 @@ Genera dos tablas con las estadísticas de los últimos sorteos:
 
 En el sorteo de Euromillones también mostrará las estadísticas de las estrellas.
 
+<img alt="Tabla con las estadísticas de los últimos sorteos." src="https://github.com/JorgeTol/LotoGen/blob/develop/img/Ejemplo_tabla_estadisticas.png">
+
 ## Generar combinaciones.
 
 Dos métodos de generarlas, utilizando las estadísticas y usando un modelo de aprendizaje automático (en desarrollo).
+
+<img alt="Menú con opciones para generar combinaciones." src="https://github.com/JorgeTol/LotoGen/blob/develop/img/Select_option_pronosticos.png">
 
 ### Crear combinaciones en base a las estadísticas.
 
@@ -123,11 +129,10 @@ El generador utiliza los siguientes filtros:
  - Figuras. Las combinaciones que genera cumplen las figuras que mas se han repedido en los últimos sorteos.
  - Número de apariciones. Hace una ponderación para que haya más probabilidades de aparecer las bolas que menos porcentaje tengan.  
  
- > Los anteriores parámetros son modificables. Durante el proceso se pedirá si se dedice modificar, dejar en blanco para mantener los valores por defecto.
+ > Los anteriores parámetros son modificables. Durante el proceso se pedirá si se dedice modificar, dejar en blanco para mantener los valores por defecto. 
+
  
- - Las combinaciones generadas tendrán las figuras que mas veces han aparecido en las estadísticas.
- 
- Por defecto genera un total de 1000 combinaciones. Se puede elegir que filtros quitar o añadir editando directamente el código en el archivo *sorteos/sorteo.py* , cambiando ```True``` por ```False```.
+ Por defecto genera un máximo de 1000 combinaciones, depende de los filtros y valores aplicados. Se puede elegir que filtros quitar o añadir editando directamente el código en el archivo *sorteos/sorteo.py* , cambiando ```True``` por ```False```.
  
  ``` 
 AUSENCIAS = True   # Incluir los números que llevan X sorteos sin salir.
@@ -136,7 +141,12 @@ FIGURAS = True     # Aplicar el filtro de figuras que mas se repiten. Nº bajo /
 POPULATION = False # Dar más probabilidades de aparición a los números que tienen un menor porcentaje de apariciones.
  ```
  
- En la consola se mostrará una tabla con la configuración y las primeras combinaciones generadas. En la carpeta raiz *pronosticos* se guardará un archivo de texto con todas las combinaciones
+ En la consola se mostrará una tabla con la configuración y las primeras combinaciones generadas. En la carpeta raiz *pronosticos* se guardará un archivo de texto con todas las combinaciones, el nombre del archivo es el nombre del sorteo mas la fecha de generación de dicho archivo.
 
+<img alt="Tablas con los pronósticos y los parámetros de configuración." src="https://github.com/JorgeTol/LotoGen/blob/develop/img/Ejemplo_tabla_pronosticos.png">
 
-
+<hr \>
+Si quieres apoyar o agradecer este proyecto y que siga creciendo se admiten donaciones
+<p>
+  <a href="https://www.paypal.com/webapps/mpp/paypal-popup" title="Donación en Paypal"> <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" border="0" alt="PayPal Logo"></a>
+</p>
