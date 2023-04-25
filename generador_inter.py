@@ -39,8 +39,8 @@ list_lottery = {
         54]
     }
 
-options_lottery = {0: "Volver al menú principal",  1: "Ver ultimos sorteos", 2: "Estadísticas", 3: "Generar combinaciones"} # Opciones por juego
-options_generator = {0: "Volver al menú principal", 1: "Basado en las estadísticas", 2: "Utilizando un modelo de Aprendizaje Automático"}
+options_lottery = {0: "Volver al menú principal",  1: "Ver ultimos sorteos", 2: "Estadísticas", 3: "Generar combinaciones", 4: "Backtest (Próximamente)"} # Opciones por juego
+options_generator = {0: "Volver al menú principal", 1: "Basado en las estadísticas", 2: "Utilizando un modelo de Aprendizaje Automático (Próximamente)"}
 
 # Formatea la salida de los mensajes en Exceptions:
 # Return str
@@ -93,7 +93,8 @@ def menu_generador(num_loteria):
 
 # Genera un menú con opciones a realizar con el sorteo elegido
 def lottery_menu(num_loteria): 
-    sorteo_elegido = sorteo.Sorteo(list_lottery[num_loteria])      
+    sorteo_elegido = sorteo.Sorteo(list_lottery[num_loteria]) 
+    pronosticos = sorteo.Pronosticos(list_lottery[num_loteria])         
     while True:          
         try:
             print("")
@@ -122,7 +123,7 @@ def lottery_menu(num_loteria):
                         if user_select_options == 0:
                             break
                         if menu_generador(num_loteria) == 1:
-                            sorteo_elegido.combinaciones_por_estadisticas()                        
+                            pronosticos.imprimir_pronosticos()                       
         except ValueError:
             errores = ("Sólo se admiten números",)
             mensaje_error(errores)     
