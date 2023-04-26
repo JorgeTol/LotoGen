@@ -149,6 +149,21 @@ POPULATION = False # Dar más probabilidades de aparición a los números que ti
 Se agradece que se reporte cualquier error.
 
 Si quieres apoyar o agradecer este proyecto y que siga creciendo se admiten donaciones
-<p>
-  <a href="https://www.paypal.com/webapps/mpp/paypal-popup" title="Donación en Paypal"> <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" border="0" alt="PayPal Logo"></a>
-</p>
+
+<table>
+   <tr>
+      <td><a href="https://www.paypal.com/webapps/mpp/paypal-popup" title="Donación en Paypal"> <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" border="0" alt="PayPal Logo"></a>
+      </td>
+      <td>
+      </td>
+   </tr>
+   <tr>
+      <td align="center"><img src="https://github.com/FortAwesome/Font-Awesome/blob/6.x/svgs/brands/btc.svg" weigh="28px" height="28px" border="0" alt="Wallet Bitcoin">
+      </td>
+      <td>1LaP4diLKfV2DtmSag14NoU9erabGuamQz</a>
+      </td>
+    
+   </tr>
+</table>
+
+    
