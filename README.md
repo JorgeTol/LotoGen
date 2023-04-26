@@ -146,10 +146,10 @@ POPULATION = False # Dar más probabilidades de aparición a los números que ti
 <img alt="Tablas con los pronósticos y los parámetros de configuración." src="https://github.com/JorgeTol/LotoGen/blob/develop/img/Ejemplo_tabla_pronosticos.png">
 
 <hr \>
-Para cualquier error tizona@duck.com.
+Para cualquier error escribir a tizona@duck.com.
 
 
-Si quieres apoyar o agradecer este proyecto y que siga creciendo se admiten donaciones
+Si quieres apoyar este repositorio o si te ha tocado un premio gracias a el, se aceptan donaciones, aunque sea para un café. Gracias.
 
 <table>
    <tr>
