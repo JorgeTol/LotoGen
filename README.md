@@ -8,10 +8,10 @@
 
 ## Introducción
 Este repositorio está desarrollado integramente en Python y utiliza algunas dependencias como Numpy. El proyecto siguen desarrollo, se irán implementando más funciones y mejorando las que ya tiene.
-Siéntete libre de aportar nuevas funcionalidades, sugerencias de mejoras de código o cualquier otra idea o error que puedas encontrar.
+Siéntete libre de sugerir nuevas funcionalidades, mejoras de código o cualquier otra idea o error que puedas encontrar.
 
 ## ¿Qué hace esta aplicación?
-Realiza consultas y análisis sobre los últimos sorteos, creando estadísticas y generando combinaciones. Todo desde la terminal de Linux o Mac y terminal CMD de windows.
+Realiza consultas y análisis sobre los últimos sorteos, creando estadísticas y generando combinaciones. Todo desde la terminal de Linux o Mac y terminal CMD de Windows.
 
 Actualmente están disponibles los siguienes sorteos:
 - Primitiva.
@@ -52,7 +52,7 @@ Con cada sorteo hay varias operaciones que se pueden realizar:
 ## Instalación
 El repositorio puede ejecutarse en cualquier computadora que tenga Python instalado, recomendable la versión 3.10, no se han realizado test en versiones anteriores.
 
-Para comprobar la version, en windows ejecutar CMD, en IOs y Linux ejercutar la terminal.
+Para comprobar la version, en Windows ejecutar CMD, en IOs y Linux ejercutar la terminal.
 
 ```python3 --version```. Debería de mostrar algo así ```Python 3.10.x```
 
@@ -92,7 +92,7 @@ Aparecerá un submenú con opciones a realizar.
 
 ## Ultimos sorteos.
 
-En la tabla se muestran los últimos 80 sorteos realizados, incluye la fecha, combinación, números adicionales (reintegro, complementarios, estrellas, etc) y una breve figura y estadística de la combinación. Los datos se actualizan automáticamente.
+En la tabla se muestran los últimos 80 sorteos realizados, incluye la fecha, combinación, números adicionales (reintegro, complementarios, estrellas, etc) y las figuras de la combinación. Los datos se actualizan automáticamente al último sorteo elegido.
 
 <img alt="Tabla con los resultados de la lotería." src="https://github.com/JorgeTol/LotoGen/blob/develop/img/Ejemplo_tabla_sorteos.png">
 
@@ -117,7 +117,7 @@ Dos métodos de generarlas, utilizando las estadísticas y usando un modelo de a
 
 Partiendo de la teoría de que todas las bolas tienen las mismas posibilidades de salir, a lo largo de los sorteos, estas tienden a aparecer un número de veces lo más parecido posible. 
 
-> Entonces, las que han salido muy pocas veces o llevan varios sorteos sin salir tienen mas probabilidades se aparecer.
+> Entonces, las que han salido muy pocas veces o llevan varios sorteos sin salir tienen mas probabilidades de aparecer.
 
 Las figuras de las combinaciones indican la relación de las bolas que la forman y siempre hay unas figuras que se repiten más que otras.
 
@@ -126,8 +126,8 @@ Las figuras de las combinaciones indican la relación de las bolas que la forman
 El generador utiliza los siguientes filtros:
  - Ausencias. Excluye las bolas que han aparecido en los últimos sorteos. Por defecto está seleccionado 1. 
  - Porcentaje de apariciones. Excluye las bolas que están por encima de la media.
- - Figuras. Las combinaciones que genera cumplen las figuras que mas se han repedido en los últimos sorteos.
- - Número de apariciones. Hace una ponderación para que haya más probabilidades de aparecer las bolas que menos porcentaje tengan.  
+ - Figuras. Las combinaciones que genera tienen las figuras que más se han repedido en los últimos sorteos.
+ - Número de apariciones. Hace una ponderación para que tengan más probabilidades de aparecer las bolas que menos porcentaje tengan.  
  
  > Los anteriores parámetros son modificables. Durante el proceso se pedirá si se dedice modificar, dejar en blanco para mantener los valores por defecto. 
 
@@ -146,6 +146,8 @@ POPULATION = False # Dar más probabilidades de aparición a los números que ti
 <img alt="Tablas con los pronósticos y los parámetros de configuración." src="https://github.com/JorgeTol/LotoGen/blob/develop/img/Ejemplo_tabla_pronosticos.png">
 
 <hr \>
+Se agradece que se reporte cualquier error.
+
 Si quieres apoyar o agradecer este proyecto y que siga creciendo se admiten donaciones
 <p>
   <a href="https://www.paypal.com/webapps/mpp/paypal-popup" title="Donación en Paypal"> <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" border="0" alt="PayPal Logo"></a>
