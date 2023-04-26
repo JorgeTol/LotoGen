@@ -146,15 +146,16 @@ POPULATION = False # Dar más probabilidades de aparición a los números que ti
 <img alt="Tablas con los pronósticos y los parámetros de configuración." src="https://github.com/JorgeTol/LotoGen/blob/develop/img/Ejemplo_tabla_pronosticos.png">
 
 <hr \>
-Se agradece que se reporte cualquier error.
+Para cualquier error tizona@duck.com.
+
 
 Si quieres apoyar o agradecer este proyecto y que siga creciendo se admiten donaciones
 
 <table>
    <tr>
-      <td><a href="https://www.paypal.com/webapps/mpp/paypal-popup" title="Donación en Paypal"> <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" border="0" alt="PayPal Logo"></a>
+      <td><a href="https://www.paypal.com/" title="Donación en Paypal"> <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" border="0" alt="PayPal Logo"></a>
       </td>
-      <td>
+      <td>tizona@duck.com
       </td>
    </tr>
    <tr>
