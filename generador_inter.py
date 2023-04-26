@@ -8,6 +8,16 @@ fecha_inicio = hoy - timedelta(days=365)  # 1 año (365 días) Formato:AAAAMMDD
 fecha_inicio = fecha_inicio.strftime("%Y%m%d")
 fecha_fin = hoy.strftime("%Y%m%d")
 
+banner = """
+                      .____             __                  .__                                        
+  /\|\/\   /\|\/\      |    |     ____ _/  |_   ____ _______ |__|_____     ______     /\|\/\   /\|\/\   
+ _)    (___)    (__    |    |    /  _ \\\   __\_/ __ \\\_  __ \|  |\__  \   /  ___/    _)    (___)    (__ 
+ \_     _/\_     _/    |    |___(  <_> )|  |  \  ___/ |  | \/|  | / __ \_ \___ \     \_     _/\_     _/ 
+   )    \   )    \     |_______ \\\____/ |__|   \___  >|__|   |__|(____  //____  >      )    \   )    \  
+   \/\|\/   \/\|\/             \/                  \/                 \/      \/       \/\|\/   \/\|\/  
+                                                                                                        
+"""
+
 # Listado de juegos.
 # id : [Nombre sorteo,
 #       url json,
@@ -134,6 +144,7 @@ def lottery_menu(num_loteria):
 # Menú principal, mostrar listados de sortéos y selección.
 # Return int
 def main_menu():
+    print(banner)
     print("""
         Consulta estadísticas, últimos sorteos y pronostica resultados a partir de las estadísticas o utilizando el aprendizaje automático.
         Los juegos de azar son eso, azar. Los pronósticos que genera este script no asegurán una mayor probabilidad de aciertos.
