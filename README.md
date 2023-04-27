@@ -155,7 +155,7 @@ Si quieres apoyar este repositorio o si te ha tocado un premio gracias a el, se 
    <tr>
       <td><img src="https://github.com/JorgeTol/LotoGen/blob/develop/img/qrcode.png" weigh="200px" height="200px" alt="QR pago paypal">
       </td>
-      <td>(https://paypal.me/tizona77)
+      <td>https://paypal.me/tizona77
       </td>
    </tr>
    <tr>
