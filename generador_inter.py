@@ -9,7 +9,7 @@ fecha_inicio = fecha_inicio.strftime("%Y%m%d")
 fecha_fin = hoy.strftime("%Y%m%d")
 
 banner = """
-                      .____             __                  .__                                        
+                       .____             __                  .__                                        
   /\|\/\   /\|\/\      |    |     ____ _/  |_   ____ _______ |__|_____     ______     /\|\/\   /\|\/\   
  _)    (___)    (__    |    |    /  _ \\\   __\_/ __ \\\_  __ \|  |\__  \   /  ___/    _)    (___)    (__ 
  \_     _/\_     _/    |    |___(  <_> )|  |  \  ___/ |  | \/|  | / __ \_ \___ \     \_     _/\_     _/ 
@@ -81,8 +81,8 @@ def menu_generador(num_loteria):
         - Basado en las estadísticas.Se actualiza automáticamente. Crea combinaciones con las siguientes reglas:
               * Figuras. Las combinaciones generadas tendrán las que más se repitan. Nº bajo / Nº alto, par / impar
               * Ausencias. Genera las combinaciones con los números que llevan ausentes X sorteos.
-              * Media aparaciciones. Excluye los números que están por encima de la media.
-              * Apariciones. Utiliza una ponderación mayor con los números que llevan mas tiempo sin aparecen.
+              * Media aparaciones. Excluye los números que están por encima de la media.
+              * Apariciones. Utiliza una ponderación mayor con los números que llevan mas tiempo sin aparecer.
         - Utilizando un modelo de Aprendizaje Automático, con los registros de los últimos sorteos crea posibles combinaciones.
             """)
             print_menu(options_generator)

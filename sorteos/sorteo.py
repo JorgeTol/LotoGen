@@ -358,16 +358,30 @@ class Pronosticos(Sorteo):
             print(f'{resultados_imprimidos} combinaciones mostradas de un total de {resultados_imprimidos}')
         # Creación tabla con datos de las estadísticas utilizadas para la generación de las combinaciones
         tabla_estadisticas = PrettyTable()
-        tabla_estadisticas.add_column("Total de combinaciones", [len(pronosticos_combinacion)])
+        tabla_estadisticas.add_column("Nº combinaciones", [len(pronosticos_combinacion)])
         if filtros["Figuras"]:
-            tabla_estadisticas.add_column("Figura bajo / alto", [figuras[0][index_max_fig_bajo]])
-            tabla_estadisticas.add_column("Figura par / impar", [figuras[0][index_max_fig_par]])
+            valor_figura_1 = figuras[0][index_max_fig_bajo]
+            valor_figura_2 = figuras[0][index_max_fig_par]
+        else:
+            valor_figura_1 = "Desac. filtro"
+            valor_figura_2 = "Desac. filtro"
+        tabla_estadisticas.add_column("Figura bajo / alto", [valor_figura_1])
+        tabla_estadisticas.add_column("Figura par / impar", [valor_figura_2])
         if filtros["Ausencias"][0]:
-            tabla_estadisticas.add_column("Sorteos ausente", [input_sorteos_ausentes])
+            valor_ausencias = input_sorteos_ausentes
+        else:
+            valor_ausencias = "Desac. filtro"
+        tabla_estadisticas.add_column("Sorteos ausente", [valor_ausencias])
         if filtros["Media porcentaje"]:
-            tabla_estadisticas.add_column("Porcentaje máximo de apariciones", [input_media_porcentaje_apariciones])
+            valor_media_porcentaje = input_media_porcentaje_apariciones
+        else:
+            valor_media_porcentaje = "Desac. filtro"
+        tabla_estadisticas.add_column("% máximo de apariciones", [valor_media_porcentaje])
         if filtros["peso por porcentaje"]:
-            tabla_estadisticas.add_column("Mayor peso a las bolas mas ausentes", ["Activado"])
+            valor_population = "Activado"
+        else:
+            valor_population = "Desac. filtro"
+        tabla_estadisticas.add_column("+ peso a las bolas más ausentes", [valor_population])
         print("Características de las combinaciones generadas.")
         tabla_estadisticas.set_style(DOUBLE_BORDER)
         print(tabla_estadisticas)
@@ -375,7 +389,7 @@ class Pronosticos(Sorteo):
         # Crear archivo de texto con todo el contenido        
         try:
             nombre_archivo = nombre_archivo.replace(" ", "_") + "_" + str(date.today()) + ".txt"
-            file = open("pronosticos/" + nombre_archivo, "w")
+            file = open("pronosticos/" + nombre_archivo, "w", encoding="utf-8")
             file.write(str(tabla_estadisticas))
             file.write("\nCombinaciones generadas\n")
             file.write(str(combinaciones_string))
