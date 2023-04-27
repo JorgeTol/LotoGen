@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Loterias
 Combinaciones ganadoras, estadísticas y generador de combinaciones.
 =======
@@ -172,4 +172,4 @@ Si quieres apoyar este repositorio o si te ha tocado un premio gracias a el, se 
 </table>
 
     
->>>>>>> develop
+
