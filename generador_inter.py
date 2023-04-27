@@ -78,9 +78,10 @@ def menu_generador(num_loteria):
         try:
             print("""
     El generador tiene 2 modos para crear las distintas combinaciones:
-        - Basado en las estadísticas.Se actualiza automáticamente. Crea una combinación con las siguientes reglas:
-              * Figuras. Crea las que mas aparecen. Nº bajo / Nº alto, par / impar
-              * Ausencias. Genera las combinaciones con los números que llevan ausentes mas del número de sorteos que se elijan.
+        - Basado en las estadísticas.Se actualiza automáticamente. Crea combinaciones con las siguientes reglas:
+              * Figuras. Las combinaciones generadas tendrán las que más se repitan. Nº bajo / Nº alto, par / impar
+              * Ausencias. Genera las combinaciones con los números que llevan ausentes X sorteos.
+              * Media aparaciciones. Excluye los números que están por encima de la media.
               * Apariciones. Utiliza una ponderación mayor con los números que llevan mas tiempo sin aparecen.
         - Utilizando un modelo de Aprendizaje Automático, con los registros de los últimos sorteos crea posibles combinaciones.
             """)
