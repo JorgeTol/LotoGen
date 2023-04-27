@@ -153,9 +153,9 @@ Si quieres apoyar este repositorio o si te ha tocado un premio gracias a el, se 
 
 <table>
    <tr>
-      <td><a href="https://www.paypal.com/" title="Donación en Paypal"> <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" border="0" alt="PayPal Logo"></a>
+      <td><img src="https://github.com/JorgeTol/LotoGen/blob/develop/img/qrcode.png" weigh="200px" height="200px" alt="QR pago paypal">
       </td>
-      <td>tizona@duck.com
+      <td>(https://paypal.me/tizona77)
       </td>
    </tr>
    <tr>
