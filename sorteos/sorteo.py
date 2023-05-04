@@ -16,6 +16,7 @@ AUSENCIAS = True   # Incluir los números que llevan X sorteos sin salir.
 PORCENTAJE = True  # Incluir los números que tienen una media de apariciones por debajo de la media.
 FIGURAS = True     # Aplicar el filtro de figuras que mas se repiten. Nº bajo / Nº alto, pares / impares
 POPULATION = False # Dar más probabilidades de aparición a los números que tienen un menor porcentaje de apariciones.
+MAX_COMBINACIONES = 4000 # Número máximo de combinaciones que se pueden generar
 
 """"
    Módulo para mostrar últimas combinaciones con sus estadísticas y un generador de pronósticos
@@ -211,11 +212,7 @@ class Sorteo:
 
 class Pronosticos(Sorteo):
     def __init__(self, sorteo_elegido):
-        super().__init__(sorteo_elegido)
-        # Editar parámetros generador combinaciones
-        self.__filtro_figuras = True
-        self.__population = False
-        self.__maximo_resultados = 1000
+        super().__init__(sorteo_elegido)        
 
     # Crear valores population (peso por porcentaje de aparición) para el array que contiene el número de bola y porcentaje apariciones
     # Parámetro Array
@@ -241,12 +238,13 @@ class Pronosticos(Sorteo):
     # 2- Excluir las bolas que están por encima de la media de porcentaje de apariciones.
     # 3- Al generar las combinaciones, dar mas peso a las bolas con menor porcentaje de apariciones
     # Con las bolas seleccionadas crea las combinaciones con un perfil con las figuras mas repetidas
-    # Return array
+    # Return array / string. Devuelve un array o una tabla lista para imprimir
     
     def __combinaciones_por_estadisticas(self, numero_bolas, numero_bolas_combinacion, combinaciones, nombre_archivo,
                                         filtro_figuras=FIGURAS,
                                         population=POPULATION,
-                                        maximo_resultados=1000):
+                                        maximo_resultados=MAX_COMBINACIONES,
+                                        backtest = False): 
         """"
             A partir de una combinación y sus estadísticas, genera una tabla con posibles combinaciones y otra tabla con la configuración del generador
         """
@@ -330,7 +328,11 @@ class Pronosticos(Sorteo):
                 if sorted(combinacion.tolist()) not in pronosticos_combinacion.tolist():  
                     pronosticos_combinacion = np.append(pronosticos_combinacion, [np.sort(combinacion)], axis=0)
                     numero_resultados += 1 
-                                       
+        
+        # La función devuelve un array
+        if backtest:
+            return pronosticos_combinacion 
+
         tabla_resultados = PrettyTable()
         tabla_resultados.field_names = ["Combinaciones"]        
         
@@ -412,9 +414,44 @@ class Pronosticos(Sorteo):
                                               filtro_figuras=False, # El filtro figuras no se puede aplicar a las estrellas.
                                               population=False,
                                               maximo_resultados=10)       
-
+    
+    # Hace una comprobración de los premios que se hubieran obtenido en el último sorteo al utilizar el generador de combinaciones.
+    def backtest(self):
+        # Eliminar el último sorteo celebrado
+        combinaciones = self.combinaciones[1:]
+        ultimo_sorteo = self.combinaciones[0]
+        
+        pronosticos = self.__combinaciones_por_estadisticas(self.numero_bolas, self.cantidad_bolas_combinacion, combinaciones, self.nombre_sorteo,        
+                                                            backtest=True)
+        
+        # Inicializar número de combinaciones acertadas en cada premio [[nº aciertos, nº combinaciones con nº aciertos]]
+        premios  = [[self.cantidad_bolas_combinacion, 0],
+                    [self.cantidad_bolas_combinacion - 1, 0],
+                    [self.cantidad_bolas_combinacion - 2, 0],
+                    [self.cantidad_bolas_combinacion - 3, 0]]            
+        
+        for pronostico in pronosticos:
+            aciertos = [n for n in pronostico if len(ultimo_sorteo[ultimo_sorteo==n])]
+            if len(aciertos) == self.cantidad_bolas_combinacion:
+                premios[0][1] += 1
+            elif len(aciertos) == self.cantidad_bolas_combinacion -1:
+                premios[1][1] += 1
+            elif len(aciertos) == self.cantidad_bolas_combinacion -2:
+                premios[2][1] += 1
+            elif len(aciertos) == self.cantidad_bolas_combinacion -3:
+                premios[3][1] += 1              
+         
+        
+        tabla = PrettyTable()
+        tabla.field_names = ['Aciertos', 'Nº combinaciones']
+        for c in premios:
+            tabla.add_row([c[0],c[1]])
+        tabla.set_style(DOUBLE_BORDER)   
+        print(tabla)
+          
+        
 if __name__ == "__main__":
-    sorteo_elegido = Sorteo(["Euromillones","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=20220517&fechaFinInclusiva=20230427", 5, 2, 50, 12])
+    #sorteo_elegido = Sorteo(["Euromillones","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=20220517&fechaFinInclusiva=20230427", 5, 2, 50, 12])
     #sorteo_elegido = Sorteo(["El Gordo de la Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=ELGR&celebrados=true&fechaInicioInclusiva=20220506&fechaFinInclusiva=20230308", 5, 1, 54])
     #sorteo_elegido = Sorteo(["Bonoloto","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=BONO&celebrados=true&fechaInicioInclusiva=20220205&fechaFinInclusiva=20230308", 6, 2, 49])
     #sorteo_elegido = Sorteo(["Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20221201&fechaFinInclusiva=20230206", 6, 2, 49])
@@ -422,9 +459,9 @@ if __name__ == "__main__":
     #Primitiva.historial_combinaciones(["Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20221201&fechaFinInclusiva=20230206"])
     #sorteo_elegido.combinaciones_por_estadisticas()
     #sorteo_elegido.imprimir_pronosticos()
-    #pronosticos = Pronosticos(["Euromillones","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=20220517&fechaFinInclusiva=20230427", 5, 2, 50, 12])
-    #pronosticos.imprimir_pronosticos()
-    sorteo_elegido.estadisticas()
+    pronosticos = Pronosticos(["Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20221201&fechaFinInclusiva=20230504", 6, 2, 49])
+    pronosticos.backtest()
+    #sorteo_elegido.estadisticas()
     #print(sorteo_elegido.combinaciones)
     #print(sorteo_elegido.numeros_adicionales)
     #sorteo_elegido._Sorteo__combinaciones
