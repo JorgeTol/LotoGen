@@ -49,7 +49,7 @@ list_lottery = {
         54]
     }
 
-options_lottery = {0: "Volver al menú principal",  1: "Ver ultimos sorteos", 2: "Estadísticas", 3: "Generar combinaciones", 4: "Backtest (Próximamente)"} # Opciones por juego
+options_lottery = {0: "Volver al menú principal",  1: "Ver ultimos sorteos", 2: "Estadísticas", 3: "Generar combinaciones", 4: "Backtest"} # Opciones por juego
 options_generator = {0: "Volver al menú principal", 1: "Basado en las estadísticas", 2: "Utilizando un modelo de Aprendizaje Automático (Próximamente)"}
 
 # Formatea la salida de los mensajes en Exceptions:
@@ -134,7 +134,9 @@ def lottery_menu(num_loteria):
                         if user_select_options == 0:
                             break
                         if menu_generador(num_loteria) == 1:
-                            pronosticos.imprimir_pronosticos()                       
+                            pronosticos.imprimir_pronosticos()
+                    if user_select_options == 4:
+                        pronosticos.backtest()                       
         except ValueError:
             errores = ("Sólo se admiten números",)
             mensaje_error(errores)     

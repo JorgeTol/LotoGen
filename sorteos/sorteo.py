@@ -276,7 +276,7 @@ class Pronosticos(Sorteo):
             bolas_seleccionadas = bolas_seleccionadas[bolas_seleccionadas[:, 3] > int(input_sorteos_ausentes)]
             
         # 2- Seleccionar las bolas que cumplen el filtro de número de apariciones por debajo de la media en porcentaje.
-        if filtros["Media porcentaje"]:            
+        if filtros["Media porcentaje"][0]:            
             while True:   
                 try:
                     input_media_porcentaje_apariciones = input("Excluir las bolas que tengan un porcentaje de aparición superior a: [Por defecto " + str(filtros["Media porcentaje"][1]) + "%] ")
@@ -330,8 +330,8 @@ class Pronosticos(Sorteo):
                     numero_resultados += 1 
         
         # La función devuelve un array
-        if backtest:
-            return pronosticos_combinacion 
+        #if backtest:
+        #    return pronosticos_combinacion 
 
         tabla_resultados = PrettyTable()
         tabla_resultados.field_names = ["Combinaciones"]        
@@ -374,7 +374,7 @@ class Pronosticos(Sorteo):
         else:
             valor_ausencias = "Desac. filtro"
         tabla_estadisticas.add_column("Sorteos ausente", [valor_ausencias])
-        if filtros["Media porcentaje"]:
+        if filtros["Media porcentaje"][0]:
             valor_media_porcentaje = input_media_porcentaje_apariciones
         else:
             valor_media_porcentaje = "Desac. filtro"
@@ -384,9 +384,12 @@ class Pronosticos(Sorteo):
         else:
             valor_population = "Desac. filtro"
         tabla_estadisticas.add_column("+ peso a las bolas más ausentes", [valor_population])
-        print("Características de las combinaciones generadas.")
+        print("\nCaracterísticas de las combinaciones generadas.")
         tabla_estadisticas.set_style(DOUBLE_BORDER)
         print(tabla_estadisticas)
+        
+        if backtest:
+            return pronosticos_combinacion 
 
         # Crear archivo de texto con todo el contenido        
         try:
@@ -401,7 +404,9 @@ class Pronosticos(Sorteo):
             print("Ha ocurrido un error con el archivo de texto", ex) 
         else:
             print("Todos los resultados se han guardado en el archivo pronosticos/" + nombre_archivo)
-    def imprimir_pronosticos(self):        
+   
+   
+    def imprimir_pronosticos(self): 
         self.__combinaciones_por_estadisticas(self.numero_bolas, self.cantidad_bolas_combinacion, self.combinaciones, self.nombre_sorteo) 
         
         # Generar pronósticos para las estrellas
@@ -417,6 +422,12 @@ class Pronosticos(Sorteo):
     
     # Hace una comprobración de los premios que se hubieran obtenido en el último sorteo al utilizar el generador de combinaciones.
     def backtest(self):
+        """
+El backtest hace una simulacion de los aciertos que hubierán tenido en el último sorteo todas las combinaciones creadas con el generador.
+Se puede modificar el perfil que tienen que cumplir las combinaciones.
+
+"""
+        print(self.backtest.__doc__)
         # Eliminar el último sorteo celebrado
         combinaciones = self.combinaciones[1:]
         ultimo_sorteo = self.combinaciones[0]
@@ -442,13 +453,14 @@ class Pronosticos(Sorteo):
                 premios[3][1] += 1              
          
         
-        tabla = PrettyTable()
-        tabla.field_names = ['Aciertos', 'Nº combinaciones']
+        tabla_aciertos = PrettyTable()
+        tabla_aciertos.field_names = ['Aciertos', 'Nº combinaciones']
         for c in premios:
-            tabla.add_row([c[0],c[1]])
-        tabla.set_style(DOUBLE_BORDER)   
-        print(tabla)
-          
+            tabla_aciertos.add_row([c[0],c[1]])
+        tabla_aciertos.set_style(DOUBLE_BORDER)
+        print("\nCombinación último sorteo: ", " - ".join(map(lambda s :f"{str(s):>s}", ultimo_sorteo))) 
+        print(tabla_aciertos)
+        
         
 if __name__ == "__main__":
     #sorteo_elegido = Sorteo(["Euromillones","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=20220517&fechaFinInclusiva=20230427", 5, 2, 50, 12])

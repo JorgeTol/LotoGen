@@ -125,6 +125,7 @@ bin/
 Include/
 Lib/
 Scripts/
+pyvenv
 
 .env
 .venv

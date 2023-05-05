@@ -15,7 +15,7 @@ Este repositorio está desarrollado integramente en Python y utiliza algunas dep
 Siéntete libre de sugerir nuevas funcionalidades, mejoras de código o cualquier otra idea o error que puedas encontrar.
 
 ## ¿Qué hace esta aplicación?
-Realiza consultas y análisis sobre los últimos sorteos, creando estadísticas y generando combinaciones. Todo desde la terminal de Linux o Mac y terminal CMD de Windows.
+Realiza consultas y análisis sobre los últimos sorteos, creando estadísticas y generando combinaciones. Todo desde la terminal de Linux o Mac y terminal CMD o Powershell de Windows.
 
 Actualmente están disponibles los siguienes sorteos:
 - Primitiva.
