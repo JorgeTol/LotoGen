@@ -149,6 +149,14 @@ POPULATION = False # Dar más probabilidades de aparición a los números que ti
 
 <img alt="Tablas con los pronósticos y los parámetros de configuración." src="https://github.com/JorgeTol/LotoGen/blob/develop/img/Ejemplo_tabla_pronosticos.png">
 
+## Backtest.
+El funcionamiento es similar al generador de combinaciones, se pueden modificar las características y figuras de las combinaciones generadas.
+
+Compara todas las combinaciones creadas con el último sorteo y muestra el total de aciertos que tienen las combinaciones.
+
+<img alt="Tablas con los aciertos de todas la combinaciones." src="https://github.com/JorgeTol/LotoGen/blob/develop/img/captura_backtest.png">
+
+
 <hr \>
 Para cualquier error escribir a tizona@duck.com.
 
