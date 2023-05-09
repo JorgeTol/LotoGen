@@ -33,7 +33,7 @@ Con cada sorteo hay varias operaciones que se pueden realizar:
 - Generador de combinaciones:
     * En base a las estadísticas.
     * Utilizando un modelo de aprendizaje automático. *Proximamente*
-    * Backtest. Consulta los premios que se hubieran obtenido con la configuración elegida en el último sorteo. *Proximamente*
+    * Backtest. Consulta los premios que se hubieran obtenido con la configuración elegida en el último sorteo. 
 
 <table>
   <thead>
