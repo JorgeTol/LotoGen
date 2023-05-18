@@ -2,7 +2,7 @@
 
 import urllib.request
 import json
-from datetime import datetime
+from datetime import datetime, date, timedelta
 import numpy as np
 from prettytable import PrettyTable, DOUBLE_BORDER
 import locale
@@ -31,10 +31,24 @@ class Sorteo:
             self.numero_estrellas = sorteo_elegido[5] # Número total de estrellas que entran en juego
         
         # Almacenar todos los datos en json
-        with  urllib.request.urlopen(sorteo_elegido[1]) as f:
-            lectura_datos = f.read().decode('utf-8')
-            self.__tabla_json = json.loads(lectura_datos)
+        # La url devuelve un máximo de 80 resultados, hacer varias peticiones para concatenar los resultados.
+        periodo = 182 # Franja de días en cada descarga de datos (Calculado para no sobrepasar los 80 sorteos)
+        n_anios_incluidos = 2 # Sorteos incluidos en el número de años indicado.
+        fecha_fin = date.today()         
+        self.__tabla_json = []
+        for f in range(n_anios_incluidos * 2): # 4 x periodo (182) aprox 2 años.
+            fecha_inicio = fecha_fin - timedelta(days=periodo)
+            fecha_inicio_format = fecha_inicio.strftime("%Y%m%d")
+            fecha_fin_format = fecha_fin.strftime("%Y%m%d")
+            
+            url = sorteo_elegido[1] + "fechaInicioInclusiva=" + str(fecha_inicio_format) + "&fechaFinInclusiva=" + str(fecha_fin_format)            
+            with  urllib.request.urlopen(url) as f:
+                lectura_datos = f.read().decode('utf-8')                
+                self.__tabla_json.extend(json.loads(lectura_datos))
+                
+            fecha_fin = fecha_fin - timedelta(days=periodo + 1) 
         
+
         self.__fecha_sorteo = []
         self.combinaciones = []
         self.__joker = []
@@ -462,22 +476,3 @@ Se puede modificar el perfil que tienen que cumplir las combinaciones.
         print(tabla_aciertos)
         
         
-if __name__ == "__main__":
-    #sorteo_elegido = Sorteo(["Euromillones","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=20220517&fechaFinInclusiva=20230427", 5, 2, 50, 12])
-    #sorteo_elegido = Sorteo(["El Gordo de la Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=ELGR&celebrados=true&fechaInicioInclusiva=20220506&fechaFinInclusiva=20230308", 5, 1, 54])
-    #sorteo_elegido = Sorteo(["Bonoloto","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=BONO&celebrados=true&fechaInicioInclusiva=20220205&fechaFinInclusiva=20230308", 6, 2, 49])
-    #sorteo_elegido = Sorteo(["Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20221201&fechaFinInclusiva=20230206", 6, 2, 49])
-
-    #Primitiva.historial_combinaciones(["Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20221201&fechaFinInclusiva=20230206"])
-    #sorteo_elegido.combinaciones_por_estadisticas()
-    #sorteo_elegido.imprimir_pronosticos()
-    pronosticos = Pronosticos(["Primitiva","https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20221201&fechaFinInclusiva=20230504", 6, 2, 49])
-    pronosticos.backtest()
-    #sorteo_elegido.estadisticas()
-    #print(sorteo_elegido.combinaciones)
-    #print(sorteo_elegido.numeros_adicionales)
-    #sorteo_elegido._Sorteo__combinaciones
-    #sorteo_elegido.ultimas_combinaciones()
-    #print(list(sorteo_elegido._Sorteo__joker))
-    # print(list(sorteo_elegido._Sorteo__numeros_bajos_altos))
-    #sorteo_elegido._Sorteo__numeros_bajos_altos

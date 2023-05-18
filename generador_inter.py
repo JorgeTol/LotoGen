@@ -1,12 +1,5 @@
 from sorteos import sorteo
-from datetime import date, timedelta
 from os import strerror
-
-# Se listarán los sorteos celebrados dentro del siguiente rango de fechas. NOTA. Actualmente se cargan los últimos 80 sorteos.
-hoy = date.today()
-fecha_inicio = hoy - timedelta(days=365)  # 1 año (365 días) Formato:AAAAMMDD
-fecha_inicio = fecha_inicio.strftime("%Y%m%d")
-fecha_fin = hoy.strftime("%Y%m%d")
 
 banner = """
                        .____             __                  .__                                        
@@ -27,23 +20,23 @@ banner = """
 list_lottery = {
     0: ["Salir", ""],
     1: ["Primitiva",
-        "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=" + fecha_inicio + "&fechaFinInclusiva=" + fecha_fin,
+        "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&",
         6,
         2,
         49],
     2: ["Bonoloto",
-        "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=BONO&celebrados=true&fechaInicioInclusiva=" + fecha_inicio + "&fechaFinInclusiva=" + fecha_fin,
+        "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=BONO&celebrados=true&",
         6,
         2,
         49],
     3: ["Euromillones",
-        "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=" + fecha_inicio + "&fechaFinInclusiva=" + fecha_fin,
+        "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&",
         5,
         2,
         50,
         12], # Número de estrellas que entran en juego
     4: ["El Gordo de la Primitiva",
-        "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=ELGR&celebrados=true&fechaInicioInclusiva=" + fecha_inicio + "&fechaFinInclusiva=" + fecha_fin,
+        "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=ELGR&celebrados=true&",
         5,
         1,
         54]

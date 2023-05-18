@@ -96,7 +96,7 @@ Aparecerá un submenú con opciones a realizar.
 
 ## Ultimos sorteos.
 
-En la tabla se muestran los últimos 80 sorteos realizados, incluye la fecha, combinación, números adicionales (reintegro, complementarios, estrellas, etc) y las figuras de la combinación. Los datos se actualizan automáticamente al último sorteo elegido.
+En la tabla se muestran los sorteos de los últimos años (por defecto 2, editable en la variable ``` n_anios_incluidos ``` del archivo sorteos\sorteo.py), incluye la fecha, combinación, números adicionales (reintegro, complementarios, estrellas, etc) y las figuras de la combinación. Los datos se actualizan automáticamente al último sorteo elegido.
 
 <img alt="Tabla con los resultados de la lotería." src="https://github.com/JorgeTol/LotoGen/blob/develop/img/Ejemplo_tabla_sorteos.png">
 
